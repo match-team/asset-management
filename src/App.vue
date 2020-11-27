@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <main-layout />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MainLayout from '@/layout/Main'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    MainLayout
   }
 }
 </script>
@@ -21,8 +20,17 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+
   color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
+}
+.container {
+  background: #fff;
+  padding: 20px 10px;
+  margin: 10px;
+  overflow-y: auto;
+}
+.pagenation {
+  margin: 30px 0;
 }
 </style>
