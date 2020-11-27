@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <platform-sidebar />
-    <div class="container">
+    <div class="wrap">
       <platform-header />
       <router-view />
     </div>
@@ -41,7 +41,7 @@ export default {
   height: 100%;
 }
 
-.container {
-  width: 98%;
+.wrap {
+  width: calc(100% - 240px);
 }
 </style>

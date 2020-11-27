@@ -28,7 +28,7 @@
 
 <style lang="less" scoped>
 .header {
-  padding: 10px;
+  padding: 10px 20px;
   background: #fff;
   display: flex;
   justify-content: space-between;

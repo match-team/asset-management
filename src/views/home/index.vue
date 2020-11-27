@@ -2,24 +2,31 @@
   <div class="container">
     <div class="table_top">
       <div>
-        <Select v-model="model1" style="width: 200px">
+        <Button type="success" @click="modalShow = true">新建</Button>
+        <Select v-model="model1" style="width: 200px" placeholder="请选择部门">
           <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
             item.label
           }}</Option>
         </Select>
 
-        <Input placeholder="Enter text" style="width: auto; margin: 0 20px">
+        <Input placeholder="请输入关键字" style="width: auto; margin-right: 10px">
           <Icon type="ios-search" slot="suffix" />
         </Input>
         <Button type="info">查询</Button>
       </div>
       <div>
-        <Button type="info" style="margin-right: 20px">导入</Button>
+        <Button type="info" style="margin-right: 10px">导入</Button>
         <Button type="success">导出</Button>
       </div>
     </div>
-    <Table size="small" border :columns="columns7" :data="data6"></Table>
+    <Table border :columns="columns2" :data="data3"></Table>
     <Page :total="100" show-elevator class="pagenation" />
+    <Modal v-model="modalShow" title="新建入库" @on-ok="ok" @on-cancel="cancel">
+      <Row>
+        <Col span="12"><label>资产编号：</label><Input v-model="value" /></Col>
+        <Col span="12"><label>资产类别：</label><Input v-model="value" /></Col>
+      </Row>
+    </Modal>
   </div>
 </template>
 
@@ -31,6 +38,7 @@ export default {
   props: {},
   data() {
     return {
+      modalShow: false,
       cityList: [
         {
           value: 'New York',
@@ -59,35 +67,95 @@ export default {
       ],
       model1: '',
 
-      columns7: [
+      columns2: [
         {
-          title: 'Name',
+          title: '资产编号',
           key: 'name',
-          render: (h, params) => {
-            return h('div', [
-              h('Icon', {
-                props: {
-                  type: 'person'
-                }
-              }),
-              h('strong', params.row.name)
-            ])
-          }
+          width: 100,
+          fixed: 'left'
         },
         {
-          title: 'Age',
-          key: 'age'
+          title: '资产类别',
+          key: 'age',
+          width: 100
         },
         {
-          title: 'Address',
-          key: 'address'
+          title: '资产名称',
+          key: 'province',
+          width: 100
         },
         {
-          title: 'Action',
+          title: '标准型号',
+          key: 'city',
+          width: 100
+        },
+        {
+          title: '计量单位',
+          key: 'address',
+          width: 200
+        },
+        {
+          title: '规格型号',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '购入日期',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '所属公司',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '金额',
+          key: 'zip',
+          width: 100
+        },
+
+        {
+          title: '管理员',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '使用期限',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '存放地点',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '创建人',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '创建时间',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '备注',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '附件',
+          key: 'zip',
+          width: 100
+        },
+        {
+          title: '来源',
           key: 'action',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
+          fixed: 'right',
+          width: 140,
+          render: h => {
             return h('div', [
               h(
                 'Button',
@@ -97,15 +165,10 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.show(params.index)
-                    }
+                    marginRight: '15px'
                   }
                 },
-                'View'
+                '编辑'
               ),
               h(
                 'Button',
@@ -113,69 +176,46 @@ export default {
                   props: {
                     type: 'error',
                     size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.remove(params.index)
-                    }
                   }
                 },
-                'Delete'
+                '删除'
               )
             ])
           }
         }
       ],
-      data6: [
+      data3: [
         {
           name: 'John Brown',
           age: 18,
-          address: 'New York No. 1 Lake Park'
+          address: 'New York No. 1 Lake Park',
+          province: 'America',
+          city: 'New York',
+          zip: 100000
         },
         {
           name: 'Jim Green',
           age: 24,
-          address: 'London No. 1 Lake Park'
-        },
-        {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park'
-        },
-        {
-          name: 'Jim Green',
-          age: 24,
-          address: 'London No. 1 Lake Park'
-        },
-        {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park'
-        },
-        {
-          name: 'Jim Green',
-          age: 24,
-          address: 'London No. 1 Lake Park'
-        },
-        {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park'
-        },
-        {
-          name: 'Jim Green',
-          age: 24,
-          address: 'London No. 1 Lake Park'
+          address: 'Washington, D.C. No. 1 Lake Park',
+          province: 'America',
+          city: 'Washington, D.C.',
+          zip: 100000
         },
         {
           name: 'Joe Black',
           age: 30,
-          address: 'Sydney No. 1 Lake Park'
+          address: 'Sydney No. 1 Lake Park',
+          province: 'Australian',
+          city: 'Sydney',
+          zip: 100000
         },
         {
           name: 'Jon Snow',
           age: 26,
-          address: 'Ottawa No. 2 Lake Park'
+          address: 'Ottawa No. 2 Lake Park',
+          province: 'Canada',
+          city: 'Ottawa',
+          zip: 100000
         }
       ]
     }
@@ -206,5 +246,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+.ivu-select {
+  margin: 0 10px;
 }
 </style>
