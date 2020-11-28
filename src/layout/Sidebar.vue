@@ -4,21 +4,21 @@
       <MenuGroup title="申请">
         <MenuItem name="1">
           <Icon type="md-document" />
-          采购申请
+          资产入库
         </MenuItem>
       </MenuGroup>
       <MenuGroup title="财务">
         <MenuItem name="3">
           <Icon type="md-heart" />
-          财务入账
+          资产入账
         </MenuItem>
         <MenuItem name="2">
           <Icon type="md-chatbubbles" />
-          资产入库
+          资产领用
         </MenuItem>
         <MenuItem name="4">
           <Icon type="md-leaf" />
-          物质领用
+          资产退库
         </MenuItem>
       </MenuGroup>
       <MenuGroup title="物质管理">
