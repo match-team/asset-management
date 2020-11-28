@@ -1,6 +1,6 @@
 export const service = {
   baseUrl: {
-    fallback: 'https:xxx'
+    fallback: '/api/'
   },
   getBaseUrl() {
     return this.baseUrl.fallback

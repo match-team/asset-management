@@ -19,7 +19,7 @@
         <Button type="success">导出</Button>
       </div>
     </div>
-    <Table border :columns="columns2" :data="data3"></Table>
+    <Table class="mygrid" border :columns="columnsTable" :data="tableList"></Table>
     <Page :total="100" show-elevator class="pagenation" />
     <Modal v-model="modalShow" title="新建入库" @on-ok="ok" @on-cancel="cancel" width="900">
       <Row :gutter="16">
@@ -60,7 +60,6 @@
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="defaultList"
             :on-success="handleSuccess"
             :format="['jpg', 'jpeg', 'png']"
             :max-size="2048"
@@ -101,6 +100,7 @@
 </template>
 
 <script>
+import { getwarehousingList } from '@/api/warehousing'
 export default {
   name: 'index',
   components: {},
@@ -108,6 +108,7 @@ export default {
   props: {},
   data() {
     return {
+      value: '',
       fileVisible: false,
       addattributeModal: false,
       modalShow: false,
@@ -139,91 +140,96 @@ export default {
       ],
       model1: '',
 
-      columns2: [
+      columnsTable: [
         {
           title: '资产编号',
-          key: 'name',
+          key: 'goodsNum',
           width: 100,
           fixed: 'left'
         },
         {
           title: '资产类别',
-          key: 'age',
+          key: 'goodsType',
           width: 100
         },
         {
           title: '资产名称',
-          key: 'province',
+          key: 'goodsName',
           width: 100
         },
         {
           title: '标准型号',
-          key: 'city',
+          key: 'standardModel',
           width: 100
         },
         {
           title: '计量单位',
-          key: 'address',
+          key: 'meteringUnit',
           width: 200
         },
         {
           title: '规格型号',
-          key: 'zip',
+          key: 'specsModel',
+          width: 100
+        },
+        {
+          title: '来源',
+          key: 'source',
           width: 100
         },
         {
           title: '购入日期',
-          key: 'zip',
-          width: 100
+          key: 'buyTime',
+          width: 200
         },
         {
           title: '所属公司',
-          key: 'zip',
+          key: 'ownerCompany',
           width: 100
         },
         {
           title: '金额',
-          key: 'zip',
+          key: 'price',
           width: 100
         },
 
         {
           title: '管理员',
-          key: 'zip',
+          key: 'adminId',
           width: 100
         },
         {
           title: '使用期限',
-          key: 'zip',
-          width: 100
+          key: 'usedDate',
+          width: 200
         },
         {
           title: '存放地点',
-          key: 'zip',
+          key: 'store_place',
           width: 100
         },
         {
           title: '创建人',
-          key: 'zip',
+          key: 'createUser',
           width: 100
         },
         {
           title: '创建时间',
-          key: 'zip',
-          width: 100
+          key: 'createTime',
+          width: 200
         },
         {
           title: '备注',
-          key: 'zip',
+          key: 'remark',
           width: 100
         },
         {
           title: '附件',
-          key: 'zip',
+          key: 'filePaths',
           width: 100
         },
         {
-          title: '来源',
+          title: '操作',
           key: 'action',
           fixed: 'right',
           width: 140,
@@ -256,51 +262,60 @@ export default {
           }
         }
       ],
-      data3: [
-        {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park',
-          province: 'America',
-          city: 'New York',
-          zip: 100000
-        },
-        {
-          name: 'Jim Green',
-          age: 24,
-          address: 'Washington, D.C. No. 1 Lake Park',
-          province: 'America',
-          city: 'Washington, D.C.',
-          zip: 100000
-        },
-        {
-          name: 'Joe Black',
-          age: 30,
-          address: 'Sydney No. 1 Lake Park',
-          province: 'Australian',
-          city: 'Sydney',
-          zip: 100000
-        },
-        {
-          name: 'Jon Snow',
-          age: 26,
-          address: 'Ottawa No. 2 Lake Park',
-          province: 'Canada',
-          city: 'Ottawa',
-          zip: 100000
-        }
-      ]
+      tableList: []
     }
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
+
+  mounted() {
+    this.getList()
+  },
   beforeDestroy() {},
   methods: {
+    ok() {},
+    cancel() {},
+    async getList() {
+      const res = await getwarehousingList()
+      console.log(res)
+      this.tableList = res.data.records
+      console.log(this.tableList)
+    },
     Importfile() {
       this.fileVisible = true
     },
+    handleView(name) {
+      this.imgName = name
+      this.visible = true
+    },
+    handleRemove(file) {
+      const fileList = this.$refs.upload.fileList
+      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
+    },
+    handleSuccess(res, file) {
+      file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
+      file.name = '7eb99afb9d5f317c912f08b5212fd69a'
+    },
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+      })
+    },
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+      })
+    },
+    handleBeforeUpload() {
+      const check = this.uploadList.length < 5
+      if (!check) {
+        this.$Notice.warning({
+          title: 'Up to five pictures can be uploaded.'
+        })
+      }
+      return check
+    },
+
     Addattribute() {
       this.addattributeModal = true
     },
@@ -319,6 +334,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ivu-table-header thead tr th,
+.ivu-table-header thead tr th {
+  text-align: center;
+}
+
 .table_top {
   display: flex;
   justify-content: space-between;

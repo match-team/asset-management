@@ -21,5 +21,22 @@ module.exports = {
         resolveResourcesPath('./src/styles/mixins.less')
       ]
     }
+  },
+  devServer: {
+    port: 8888,
+    host: '0.0.0.0',
+    https: false,
+    open: true,
+
+    proxy: {
+      '/api': {
+        target: 'http://10.60.80.41/',
+        ws: true,
+        changOrigin: true,
+        pathRewrite: {
+          '^/api': '/'
+        }
+      }
+    }
   }
 }
