@@ -30,8 +30,15 @@
       :columns="columnsTable"
       :data="tableList"
     ></Table>
-    <Page :total="100" show-elevator class="pagenation" />
-    <Modal v-model="modalShow" title="新建入库" @on-ok="handleAdd" @on-cancel="cancel" width="900">
+    <Page
+      :total="pages"
+      :current="current"
+      :page-size="size"
+      @on-change="changePageNum"
+      show-elevator
+      class="pagenation"
+    />
+    <Modal v-model="modalShow" title="新建入库" width="900">
       <Row :gutter="16">
         <Col span="12"><label>资产编号：</label><Input v-model="formModal.goodsNum" /></Col>
         <Col span="12"><label>资产类别：</label><Input v-model="formModal.goodsType" /></Col>
@@ -48,7 +55,7 @@
         <Col span="12"><label>来源：</label><Input v-model="formModal.source" /></Col>
         <Col span="12"
           ><label>购入日期：</label>
-          <DatePicker v-model="formModal.buyTime" type="date"></DatePicker>
+          <DatePicker :editable="false" v-model="formModal.buyTime" type="date"></DatePicker>
         </Col>
       </Row>
       <Row :gutter="16">
@@ -59,7 +66,7 @@
         <Col span="12"><label>管理员：</label><Input v-model="formModal.adminId" /></Col>
         <Col span="12"
           ><label>使用期限：</label>
-          <DatePicker v-model="formModal.usedDate" type="date"></DatePicker>
+          <DatePicker :editable="false" v-model="formModal.usedDate" type="date"></DatePicker>
         </Col>
       </Row>
       <Row :gutter="16">
@@ -70,7 +77,7 @@
         <Col span="12"
           ><label>创建时间：</label>
 
-          <DatePicker v-model="formModal.createTime" type="date"></DatePicker>
+          <DatePicker :editable="false" v-model="formModal.createTime" type="date"></DatePicker>
         </Col>
         <Col span="12"><label>备注：</label><Input v-model="formModal.remark" /></Col>
       </Row>
@@ -84,43 +91,30 @@
       <Row>
         <Col span="24">上传图片:</Col>
         <Col span="24">
-          <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
-            <template v-if="item.status === 'finished'">
-              <img :src="item.url" />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-              </div>
-            </template>
-            <template v-else>
-              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-            </template>
+          <div class="demo-upload-list" v-for="(item, index) in images" :key="index">
+            <img
+              :src="item"
+              style="width: 58px; height: 58px; line-height: 58px"
+              @click="handleView"
+            />
           </div>
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="defaultList"
-            :on-success="handleSuccess"
             :format="['jpg', 'jpeg', 'png']"
             :max-size="2048"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :before-upload="handleBeforeUpload"
+            :before-upload="onBeforeUpload"
             multiple
             type="drag"
-            action="//jsonplaceholder.typicode.com/posts/"
             style="display: inline-block; width: 58px"
+            action="."
           >
             <div style="width: 58px; height: 58px; line-height: 58px">
               <Icon type="ios-camera" size="20"></Icon>
             </div>
           </Upload>
-          <Modal title="View Image" v-model="visible">
-            <img
-              :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'"
-              v-if="visible"
-              style="width: 100%"
-            />
+          <Modal title="图片预览" v-model="visible">
+            <img :src="images[0]" v-if="visible" style="width: 100%" />
           </Modal>
         </Col>
       </Row>
@@ -129,6 +123,10 @@
           ><Button type="info" ghost @click="addattributeModal = true">添加新属性</Button></Col
         >
       </Row>
+      <div slot="footer">
+        <Button type="primary" @click="handleAdd">确定</Button>
+        <Button @click="modalShow = false">取消</Button>
+      </div>
     </Modal>
     <Modal
       v-model="addattributeModal"
@@ -154,6 +152,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { getwarehousingList, warehousingAdd } from '@/api/warehousing'
 
 let attributeIndex = -1
@@ -164,6 +163,8 @@ export default {
   props: {},
   data() {
     return {
+      pages: 100,
+      uploadFileList: [],
       inputProp: '',
       //新添加的属性
 
@@ -194,8 +195,8 @@ export default {
       fileVisible: false,
       addattributeModal: false,
       modalShow: false,
-      pageNum: 1,
-      pageSize: 10,
+      current: 1,
+      size: 10,
       cityList: [
         {
           value: '欧冶采购',
@@ -343,20 +344,10 @@ export default {
         }
       ],
       tableList: [],
-      defaultList: [
-        {
-          name: 'a42bdcc1178e62b4694c830f028db5c0',
-          url: 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-        },
-        {
-          name: 'bc7521e033abdd1e92222d733590f104',
-          url: 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-        }
-      ],
-      imgName: '',
       visible: false,
       uploadList: [],
-      newValue: ''
+      newValue: '',
+      images: []
     }
   },
 
@@ -371,28 +362,46 @@ export default {
       attributeIndex = -1
       this.newValue = ''
     },
+    changePageNum(page) {
+      this.getList(page)
+    },
     handleInput(index) {
-      console.log(index)
       let value = this.$refs.input1[0].currentValue
       console.log(value)
       this.newAttribute[index][`prop${index}`] = this.$refs.input1[0].currentValue
       console.log(this.newAttribute)
     },
     ok() {},
+    // 新建
     async handleAdd() {
-      // console.log(this.newAttribute)
-      const res = await warehousingAdd(this.formModal)
+      this.formModal.createTime = moment(this.formModal.createTime).format('YYYY-MM-DD')
+      this.formModal.buyTime = moment(this.formModal.buyTime).format('YYYY-MM-DD')
+      this.formModal.usedDate = moment(this.formModal.usedDate).format('YYYY-MM-DD')
+      const formData = new FormData()
+      console.log(this.uploadFileList[0])
+      formData.append('file', this.uploadFileList[0])
+      for (let key in this.formModal) {
+        formData.append(key, this.formModal[key])
+      }
+
+      const res = await warehousingAdd(formData)
       console.log(res)
+
+      // if (res.success) {
+      //   this.$Message.success('新建成功')
+      // } else {
+      //   this.$Message.error(res.msg)
+      // }
     },
     cancel() {},
-    async getList() {
+    async getList(page) {
       this.loadingTable = true
       try {
         const res = await getwarehousingList({
           searchKey: this.searchKey,
           ownerCompany: this.ownerCompany,
-          pageNum: this.pageNum,
-          pageSize: this.pageSize
+          size: this.size,
+          current: page || this.current
         })
         if (res.success) {
           this.tableList = res.detail.records
@@ -422,49 +431,34 @@ export default {
       // let key = `prop${attributeIndex}`
       // this.newAttribute.push({ [key]: _arr })
     },
-    handleContextMenu(row) {
-      const index = this.data1.findIndex(item => item.name === row.name)
-      this.contextLine = index + 1
-    },
-    handleContextMenuEdit() {
-      this.$Message.info('Click edit of line' + this.contextLine)
-    },
-    handleContextMenuDelete() {
-      this.$Message.info('Click delete of line' + this.contextLine)
-    },
-    //上传图片
-    handleView(name) {
-      this.imgName = name
-      this.visible = true
-    },
-    handleRemove(file) {
-      const fileList = this.$refs.upload.fileList
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
-    },
-    handleSuccess(res, file) {
-      file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
-      file.name = '7eb99afb9d5f317c912f08b5212fd69a'
-    },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-      })
-    },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-      })
-    },
-    handleBeforeUpload() {
-      const check = this.uploadList.length < 5
-      if (!check) {
-        this.$Notice.warning({
-          title: 'Up to five pictures can be uploaded.'
-        })
+
+    onBeforeUpload(file) {
+      this.uploadFileList.push(file)
+
+      const check = this.uploadFileList.length > 1
+      if (check) {
+        this.$Message.info('最多上传一张图片')
       }
-      return check
+      this.processPreviewImage()
+    },
+    processPreviewImage() {
+      this.images = []
+      let index = 0
+
+      const reader = new FileReader()
+      reader.onload = ({ target }) => {
+        this.images.push(target.result)
+
+        index++
+        index < this.uploadFileList.length && reader.readAsDataURL(this.uploadFileList[index])
+      }
+
+      console.log(this.images)
+      reader.readAsDataURL(this.uploadFileList[index])
+    },
+    handleView() {
+      console.log('click')
+      this.visible = true
     }
   }
 }
