@@ -49,30 +49,6 @@
         <Col span="12"><label>存放地点：</label><Input v-model="recordObj.storePlace" /></Col>
         <Col span="12"><label>备注：</label><Input v-model="recordObj.remark" /></Col>
       </Row>
-      <Row>
-        <Col span="24">上传图片:</Col>
-        <Col span="24">
-          <Upload
-              ref="upload"
-              :show-upload-list="false"
-              :default-file-list="uploadObj.defaultList"
-              :on-success="uploadObj.handleSuccess"
-              :format="['jpg', 'jpeg', 'png']"
-              :max-size="2048"
-              :on-format-error="uploadObj.handleFormatError"
-              :on-exceeded-size="uploadObj.handleSizeOutError"
-              :before-upload="uploadObj.handleBeforeUpload"
-              multiple
-              type="drag"
-              action="//jsonplaceholder.typicode.com/posts/"
-              style="display: inline-block; width: 58px"
-          >
-            <div style="width: 58px; height: 58px; line-height: 58px">
-              <Icon type="ios-camera" size="20"></Icon>
-            </div>
-          </Upload>
-        </Col>
-      </Row>
     </Modal>
     <Modal v-model="fileVisible" title="导入文件" @on-ok="okImport" >
       <Row>
@@ -167,39 +143,6 @@ export default {
           title: '备注',
           key: 'remark',
           width: 200
-        },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 140,
-          render: h => {
-            return h('div', [
-              h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '15px'
-                    }
-                  },
-                  '编辑'
-              ),
-              h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'error',
-                      size: 'small'
-                    }
-                  },
-                  '删除'
-              )
-            ])
-          }
         }
       ],//表格标签
       pageNum:1,
