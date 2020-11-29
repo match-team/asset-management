@@ -3,7 +3,10 @@ import Scarp from '@/views/scrap/index'
 export default [
   {
     path: '/platform',
-    component: PlatformLayout
+    component: PlatformLayout,
+    meta: {
+      name: '资产入库'
+    }
   },
   {
     path: '/scrap',

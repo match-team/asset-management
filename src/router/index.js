@@ -13,7 +13,9 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  LoadingBar.start()
+  localStorage.setItem('breadcrumb', JSON.stringify(to))
+  // this.$store.commit('saveHeader', to)
+  // console.log(to, from)
   next()
 })
 
