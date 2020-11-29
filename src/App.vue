@@ -1,15 +1,17 @@
 <template>
   <div id="app">
-    <main-layout />
+    <main-layout v-if="this.$route.fullPath!='/login'"/>
+    <login v-if="this.$route.fullPath=='/login'" />
   </div>
 </template>
 
 <script>
 import MainLayout from '@/layout/Main'
-
+import Login from "@/views/login/login";
 export default {
   name: 'App',
   components: {
+    Login,
     MainLayout
   }
 }
