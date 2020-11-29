@@ -298,7 +298,7 @@ export default {
         this.$Notice.error({title: '错误', desc: '领用日期不能为空'});
         return false;
       }
-      let url="http://localhost/applyRecord/add";
+      let url="/applyRecord/add";
       console.log("params"+JSON.stringify(params));
       axios.post(url,params).then(function (r){
         if (r.success) {
@@ -324,7 +324,7 @@ export default {
         company:this.company
       }
       let that =this;
-      let url="http://localhost/applyRecord/list";
+      let url="/applyRecord/list";
       console.log("params"+JSON.stringify(params));
       axios.get(url,{params:params}).then(function (r){
         console.log(r);
@@ -341,7 +341,7 @@ export default {
     },
     loadGoods(){
       let that =this;
-      let url="http://localhost/goodsRecord/allGoodsRecordList";
+      let url="/goodsRecord/allGoodsRecordList";
       axios.get(url).then(function (r){
         console.log(r);
         if (r.success){

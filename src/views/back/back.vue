@@ -283,7 +283,7 @@ export default {
         this.$Notice.error({title: '错误', desc: '请填写信息'});
         return false;
       }
-      let url="http://localhost/backRecord/add";
+      let url="/backRecord/add";
       console.log("params"+JSON.stringify(params));
       axios.post(url,params).then(function (r){
         if (r.success) {
@@ -309,7 +309,7 @@ export default {
         company:this.company
       }
       let that =this;
-      let url="http://localhost/backRecord/list";
+      let url="/backRecord/list";
       console.log("params"+JSON.stringify(params));
       axios.get(url,{params:params}).then(function (r){
         console.log(r);
@@ -326,7 +326,7 @@ export default {
     },
     loadGoods(){
       let that =this;
-      let url="http://localhost/goodsRecord/allGoodsRecordList";
+      let url="/goodsRecord/allGoodsRecordList";
       axios.get(url).then(function (r){
         console.log(r);
         if (r.success){

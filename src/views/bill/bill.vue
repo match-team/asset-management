@@ -314,7 +314,7 @@ export default {
         this.$Notice.error({title: '错误', desc: '含税金额不能为空'});
         return false;
       }
-      let url="http://localhost/billRecord/add";
+      let url="/billRecord/add";
       console.log("params"+JSON.stringify(params));
       axios.post(url,params).then(function (r){
         if (r.success) {
@@ -341,7 +341,7 @@ export default {
         ownerCompany:this.company
       }
       console.log("params"+JSON.stringify(params));
-      let url="http://localhost/billRecord/queryList";
+      let url="/billRecord/queryList";
       axios.get(url,{params:params}).then(function (r){
         console.log(r);
         if (r.success){
@@ -357,7 +357,7 @@ export default {
     },
     loadGoods(){
       let that =this;
-      let url="http://localhost/goodsRecord/allGoodsRecordList";
+      let url="/goodsRecord/allGoodsRecordList";
       axios.get(url).then(function (r){
         console.log(r);
         if (r.success){
