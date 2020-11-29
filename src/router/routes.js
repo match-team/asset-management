@@ -3,6 +3,7 @@ import bill from './bill'
 import give from './give'
 import back from './back'
 import login from './login'
+import scrap from './scrap'
 
 export default [
   {
@@ -15,4 +16,5 @@ export default [
   ...give,
   ...back,
   ...login,
+  ...scrap,
 ]
