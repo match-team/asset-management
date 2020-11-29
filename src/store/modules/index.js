@@ -1,4 +1,4 @@
-const modules = {}
+const modules = {isLogin:false}
 
 const requireVuexModule = require.context('./', true, /^((?!index).)*\.js$/)
 

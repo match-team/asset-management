@@ -2,6 +2,7 @@ import platform from './platform'
 import bill from './bill'
 import give from './give'
 import back from './back'
+import login from './login'
 
 export default [
   {
@@ -13,4 +14,5 @@ export default [
   ...bill,
   ...give,
   ...back,
+  ...login,
 ]

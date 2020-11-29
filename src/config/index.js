@@ -1,6 +1,6 @@
 export const service = {
   baseUrl: {
-    fallback: '/api/'
+    fallback: 'http://localhost'
   },
   getBaseUrl() {
     return this.baseUrl.fallback
