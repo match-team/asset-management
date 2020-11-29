@@ -26,15 +26,15 @@
       <MenuGroup title="物质管理">
         <MenuItem name="5" @click="pageMark = '5'">
           <Icon type="md-heart" />
-          维修管理
+          <router-link to="servicing"> 维修管理 </router-link>
         </MenuItem>
         <MenuItem name="6" @click="pageMark = '6'">
           <Icon type="md-leaf" />
-          盘点管理
+          <router-link to="inventory"> 盘点管理 </router-link>
         </MenuItem>
         <MenuItem name="7" @click="pageMark = '7'">
           <Icon type="md-leaf" />
-          报废处理
+          <router-link to="scrap"> 报废处理 </router-link>
         </MenuItem>
       </MenuGroup>
     </Menu>
@@ -52,6 +52,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+a {
+  color: #eee;
+}
 .platform-sidebar {
   background-color: #ffffff;
   border-radius: 2px;

@@ -18,7 +18,6 @@
         </Input>
         <Button type="info" @click="handleSearch">查询</Button>
       </div>
-      
     </div>
     <Table class="mygrid" :loading="loadingTable" border :columns="columnsTable" :data="tableList">
     </Table>
@@ -336,8 +335,7 @@ export default {
               )
             ])
           }
-        },
-        
+        }
       ],
       tableList: [],
       visible: false,
