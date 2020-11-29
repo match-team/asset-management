@@ -18,18 +18,10 @@
         </Input>
         <Button type="info" @click="handleSearch">查询</Button>
       </div>
-      <div>
-        <Button type="info" style="margin-right: 10px" @click="Importfile">导入</Button>
-        <Button type="success">导出</Button>
-      </div>
+      
     </div>
-    <Table
-      class="mygrid"
-      :loading="loadingTable"
-      border
-      :columns="columnsTable"
-      :data="tableList"
-    ></Table>
+    <Table class="mygrid" :loading="loadingTable" border :columns="columnsTable" :data="tableList">
+    </Table>
     <Page
       :total="pages"
       :current="current"
@@ -235,6 +227,12 @@ export default {
           fixed: 'left'
         },
         {
+          title: '动态属性',
+          key: 'goodsNum',
+          width: 100,
+          fixed: 'left'
+        },
+        {
           title: '资产类别',
           key: 'goodsType',
           width: 100
@@ -314,7 +312,7 @@ export default {
           title: '附件',
           key: 'filePaths',
           width: 100,
-          render: h => {
+          render: (h, params) => {
             return h('div', [
               h(
                 'Button',
@@ -326,12 +324,11 @@ export default {
                   style: {
                     marginRight: '5px'
                   },
-
                   on: {
-                    click: e => {
-                      console.log(e)
+                    click: () => {
+                      console.log(`http://10.60.17.43:8080/gdzcgl/${params.row.filePaths}`)
                       this.fjvisible = true
-                      this.fjUrl = 23
+                      this.fjUrl = `http://10.60.17.43:8080/gdzcgl/${params.row.filePaths}`
                     }
                   }
                 },
@@ -340,39 +337,7 @@ export default {
             ])
           }
         },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 140,
-          render: h => {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '15px'
-                  }
-                },
-                '编辑'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  }
-                },
-                '删除'
-              )
-            ])
-          }
-        }
+        
       ],
       tableList: [],
       visible: false,
@@ -387,6 +352,9 @@ export default {
   },
   beforeDestroy() {},
   methods: {
+    show(e) {
+      console.log(e)
+    },
     largeModalAdd() {
       this.modalShow = true
       this.newAttribute = []
