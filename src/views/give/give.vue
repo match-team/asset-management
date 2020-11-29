@@ -57,7 +57,7 @@
         <Col span="24">上传图片:</Col>
         <Col span="24">
           <div class="demo-upload-list" v-if="recordObj.filePaths">
-            <img :src="baseURL+'/'+recordObj.filePaths"
+            <img :src="baseURL+recordObj.filePaths"
                  style="width: 58px; height: 58px; line-height: 58px"/>
           </div>
           <Upload
@@ -106,7 +106,7 @@ export default {
   data() {
     return {
       baseURL:axios.defaults.baseURL,
-      fileUrl:axios.defaults.baseURL+"/rest/saveFile",
+      fileUrl:axios.defaults.baseURL+"rest/saveFile",
       searchKey:"",//查询关键字
       uploadObj:{
         defaultList:[],
@@ -189,7 +189,7 @@ export default {
               let list = filePaths.split(";");
               for (let i = 0; i < list.length; i++) {
                 let fileName = list[i];
-                fileA.push(h("a",{attrs:{href:axios.defaults.baseURL+"/"+fileName,target:"_blank"}},fileName))
+                fileA.push(h("a",{attrs:{href:axios.defaults.baseURL+fileName,target:"_blank"}},fileName))
               }
             }
             if (fileA.length==0){
