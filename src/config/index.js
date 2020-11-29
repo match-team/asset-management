@@ -1,6 +1,6 @@
 export const service = {
   baseUrl: {
-    fallback: 'http://localhost'
+    fallback: 'http://10.60.17.43:8080/gdzcgl/'
   },
   getBaseUrl() {
     return this.baseUrl.fallback

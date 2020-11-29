@@ -85,7 +85,7 @@
       <Row :gutter="16" v-if="newAttribute.length > 0">
         <Col span="12" v-for="(item, index) in newAttribute" :key="index">
           <label>{{ item[`prop${index}`] }}:</label>
-          <Input :value="inputProp" @on-change="handleInput(index)" ref="input1"></Input>
+          <Input @on-change="handleInput(index)" ref="input1"></Input>
         </Col>
       </Row>
       <Row>
@@ -148,13 +148,16 @@
         </Upload>
       </Row>
     </Modal>
+    <Modal title="附件图片预览" v-model="fjvisible">
+      <img :src="fjUrl" style="width: 100%" />
+    </Modal>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import { getwarehousingList, warehousingAdd } from '@/api/warehousing'
-
+import { deepClone } from '@/utils/deepClone'
 let attributeIndex = -1
 export default {
   name: 'index',
@@ -163,6 +166,9 @@ export default {
   props: {},
   data() {
     return {
+      //附件图片预览
+      fjvisible: false,
+      fjUrl: '',
       pages: 100,
       uploadFileList: [],
       inputProp: '',
@@ -307,7 +313,32 @@ export default {
         {
           title: '附件',
           key: 'filePaths',
-          width: 100
+          width: 100,
+          render: h => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+
+                  on: {
+                    click: e => {
+                      console.log(e)
+                      this.fjvisible = true
+                      this.fjUrl = 23
+                    }
+                  }
+                },
+                '附件图片'
+              )
+            ])
+          }
         },
         {
           title: '操作',
@@ -366,10 +397,10 @@ export default {
       this.getList(page)
     },
     handleInput(index) {
+      let _arr = deepClone(this.newAttribute)
       let value = this.$refs.input1[0].currentValue
-      console.log(value)
-      this.newAttribute[index][`prop${index}`] = this.$refs.input1[0].currentValue
-      console.log(this.newAttribute)
+
+      _arr[index][`prop${index}`] = value
     },
     ok() {},
     // 新建
@@ -378,20 +409,26 @@ export default {
       this.formModal.buyTime = moment(this.formModal.buyTime).format('YYYY-MM-DD')
       this.formModal.usedDate = moment(this.formModal.usedDate).format('YYYY-MM-DD')
       const formData = new FormData()
-      console.log(this.uploadFileList[0])
-      formData.append('file', this.uploadFileList[0])
+      formData.append('files', this.uploadFileList[0])
       for (let key in this.formModal) {
         formData.append(key, this.formModal[key])
       }
-
+      this.newAttribute.forEach(item => {
+        for (let key in item) {
+          formData.append(key, item[key])
+        }
+      })
       const res = await warehousingAdd(formData)
       console.log(res)
+      if (res.success) {
+        this.$Message.success('新建成功')
 
-      // if (res.success) {
-      //   this.$Message.success('新建成功')
-      // } else {
-      //   this.$Message.error(res.msg)
-      // }
+        this.modalShow = false
+
+        this.getList()
+      } else {
+        this.$Message.error(res.msg)
+      }
     },
     cancel() {},
     async getList(page) {
@@ -405,6 +442,16 @@ export default {
         })
         if (res.success) {
           this.tableList = res.detail.records
+          // this.tableList.forEach(item => {
+          // for (let key in item) {
+          //   this.columnsTable.push({
+          //     title: key,
+          //     key: key,
+          //     width: 100,
+          //     fixed: 'left'
+          //   })
+          // }
+          // })
         } else {
           throw new Error(res.msg || '接口返回错误')
         }
@@ -453,11 +500,9 @@ export default {
         index < this.uploadFileList.length && reader.readAsDataURL(this.uploadFileList[index])
       }
 
-      console.log(this.images)
       reader.readAsDataURL(this.uploadFileList[index])
     },
     handleView() {
-      console.log('click')
       this.visible = true
     }
   }
