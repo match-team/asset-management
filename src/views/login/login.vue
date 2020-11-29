@@ -30,6 +30,15 @@
           </div>
         </form>
       </div>
+  <div class="land">
+    <div class="land_logo"><img src="/gdzcgl/imgs/ouyeellogo.png" ></div>
+    <div class="land_c">
+      <h3>用户登录</h3>
+      <form action="" method="get">
+        <div class="box user_text"><em></em><input class="text " name="" type="text" placeholder="请输入用户名" v-model="param.phone"/></div>
+        <div class="box pwd_text"><em></em><input class="text " name="" type="password" placeholder="请输入密码" v-model="param.pwd"/></div>
+        <div class="box"><input type="button" class="bnt_ljdl" value="立即登录" @click="toLogin"></div>
+      </form>
     </div>
     <div class="land_b">Copyright © 2017 By bsteel.com All Rights Reserved</div>
   </div>
@@ -176,10 +185,6 @@ input {
   float: left;
   background: url(/imgs/bnt_sx.png) center no-repeat;
   cursor: pointer;
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-  -moz-transition: -moz-transform 0.3s ease-out;
-  -o-transition: -o-transform 0.3s ease-out;
-  -ms-transition: -ms-transform 0.3s ease-out;
 }
 .land_c .box .bnt_sx.hov {
   -webkit-transform: rotateZ(360deg);
