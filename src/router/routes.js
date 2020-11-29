@@ -1,4 +1,7 @@
 import platform from './platform'
+import bill from './bill'
+import give from './give'
+import back from './back'
 
 export default [
   {
@@ -6,5 +9,8 @@ export default [
     redirect: '/platform'
   },
 
-  ...platform
+  ...platform,
+  ...bill,
+  ...give,
+  ...back,
 ]
