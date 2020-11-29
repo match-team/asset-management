@@ -7,7 +7,7 @@ import axios from "@/utils/axios";
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
   scrollBehavior: () => ({ x: 0, y: 0 })
