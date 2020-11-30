@@ -5,7 +5,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath:"",
+  publicPath: '',
   chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('src'))
@@ -27,17 +27,6 @@ module.exports = {
     port: 8888,
     host: '0.0.0.0',
     https: false,
-    open: true,
-
-    proxy: {
-      '/api': {
-        target: 'http://10.60.80.60/',
-        ws: true,
-        changOrigin: true,
-        pathRewrite: {
-          '^/api': '/'
-        }
-      }
-    }
+    open: true
   }
 }
