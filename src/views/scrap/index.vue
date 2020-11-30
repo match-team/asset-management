@@ -4,6 +4,7 @@
 
     <!-- 顶部栏 -->
     <div >
+      <Button type="success" @click="modalShow = true">新建</Button>
       <Select v-model="company" style="width: 200px;margin: 0 10px;" placeholder="请选择公司">
         <Option v-for="item in companies" :value="item.value" :key="item.value">
           {{ item.label }}
@@ -15,10 +16,6 @@
       </Input>
       <Button type="info" @click="queryPage(1)">查询</Button>
     </div>
-      <!-- 右侧4个按钮 -->
-      <div >
-        <Button  @click="modalShow=true">新建</Button>
-      </div>
     <!-- 表格内容 -->
     <Table border  :columns="columns" :data="pageResult.detail" height="400" @on-selection-change="changeSelect"></Table>
     <Page :total="pages" :current="pageNum" :page-size="pageSize" @on-change="changePageNum" show-total class="pagenation"  />
@@ -40,12 +37,7 @@
       <Row :gutter="16">
         <Col span="12">
           <label>报废日期：</label>
-          <DatePicker type="datetime"
-                      format="yyyy-MM-dd HH:mm"
-                      placeholder="yyyy-MM-dd HH:mm"
-                      @on-change="changeDateTime"
-                      style="width: 300px">
-          </DatePicker>
+          <DatePicker :editable="false" @on-change="changeDateTime" type="date"></DatePicker>
         </Col>
         <Col span="12"><label>是否一键转卖：</label>
           <RadioGroup v-model="recordObj.flag1">
@@ -204,30 +196,26 @@ export default {
       modalShow: false,
       searchKey: "",//查询关键字
       goods: [],//物资明细
-      companies: [
+      companies:  [
+        {
+          value: '欧冶采购',
+          label: '欧冶采购'
+        },
+        {
+          value: '欧冶金融',
+          label: '欧冶金融'
+        },
+        {
+          value: '欧冶云商',
+          label: '欧冶云商'
+        },
         {
           value: '东方钢铁',
           label: '东方钢铁'
         },
         {
-          value: '欧冶金服',
-          label: '欧冶金服'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          value: '欧冶物流',
+          label: '欧冶物流'
         }
       ],//公司集合
       company: '',//公司
@@ -397,5 +385,8 @@ export default {
   label {
     width: 100px;
   }
+}
+/deep/ .ivu-date-picker {
+  width: 100%;
 }
 </style>

@@ -14,10 +14,6 @@
         </Input>
         <Button type="info" @click="queryPage(1)">查询</Button>
       </div>
-      <div>
-        <Button type="info" style="margin-right: 10px" @click="Importfile">导入</Button>
-        <Button type="success">导出</Button>
-      </div>
     </div>
     <Table border :columns="columns" :data="pageResult.detail" height="400"></Table>
     <Page :total="pages" :current="pageNum" :page-size="pageSize" @on-change="changePageNum" show-total class="pagenation"  />
@@ -36,12 +32,7 @@
       <Row :gutter="16">
         <Col span="12">
           <label>退库日期：</label>
-          <DatePicker type="datetime"
-                      format="yyyy-MM-dd HH:mm"
-                      placeholder="yyyy-MM-dd HH:mm"
-                      @on-change="changeDateTime"
-                      style="width: 300px">
-          </DatePicker>
+          <DatePicker :editable="false" @on-change="changeDateTime" type="date"></DatePicker>
         </Col>
         <Col span="12"><label>使用区域：</label><Input v-model="recordObj.area" /></Col>
       </Row>
@@ -154,30 +145,26 @@ export default {
       },
       fileVisible: false,
       modalShow: false,
-      companies: [
+      companies:  [
+        {
+          value: '欧冶采购',
+          label: '欧冶采购'
+        },
+        {
+          value: '欧冶金融',
+          label: '欧冶金融'
+        },
+        {
+          value: '欧冶云商',
+          label: '欧冶云商'
+        },
         {
           value: '东方钢铁',
           label: '东方钢铁'
         },
         {
-          value: '欧冶金服',
-          label: '欧冶金服'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          value: '欧冶物流',
+          label: '欧冶物流'
         }
       ],//公司集合
       company: '',//公司
@@ -305,5 +292,7 @@ export default {
     width: 100px;
   }
 }
-
+/deep/ .ivu-date-picker {
+  width: 100%;
+}
 </style>
