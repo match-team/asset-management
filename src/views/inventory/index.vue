@@ -72,7 +72,15 @@
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"> <label>所属公司：</label><Input v-model="recordObj.ownerCompany" /></Col>
+        <Col span="12">
+          <label>所属公司：</label>
+          <Select v-model="recordObj.ownerCompany" placeholder="请选择部门">
+            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
+              item.label
+            }}</Option>
+          </Select>
+          <!-- <label>所属公司：</label><Input v-model="recordObj.ownerCompany" /> -->
+        </Col>
         <Col span="12">
           <label>资产分类：</label>
           <Input v-model="recordObj.goodsType" />

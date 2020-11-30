@@ -131,7 +131,13 @@
     </Modal>
 
     <Modal title="附件图片预览" v-model="fjvisible">
-      <img :src="fjUrl" style="width: 100%" />
+      <img id="printTest" :src="fjUrl" style="width: 100%" />
+
+      <div slot="footer">
+        <Button type="primary" v-if="isDayin" v-print="'#printTest'" @click="dayin">打印</Button>
+        <Button type="primary" @click="fjvisible = false">确定</Button>
+        <Button @click="fjvisible = false">取消</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -151,6 +157,8 @@ export default {
   props: {},
   data() {
     return {
+      //是否打印
+      isDayin: false,
       //附件图片预览
       fjvisible: false,
       fjUrl: '',
@@ -333,6 +341,36 @@ export default {
               )
             ])
           }
+        },
+        {
+          title: '二维码',
+          key: 'qrImg',
+          width: 100,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      let str = params.row.qrImg
+                      this.fjvisible = true
+                      this.isDayin = true
+                      this.fjUrl = `http://10.60.17.43:8080/gdzcgl/upload/${str}`
+                    }
+                  }
+                },
+                '二维码'
+              )
+            ])
+          }
         }
       ],
       tableList: [],
@@ -348,6 +386,10 @@ export default {
   },
   beforeDestroy() {},
   methods: {
+    //打印
+    dayin() {
+      this.fjvisible = false
+    },
     //添加属性弹窗
     confirmSx() {
       attributeIndex++

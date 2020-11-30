@@ -1,7 +1,8 @@
 export const service = {
   baseUrl: {
     // fallback: 'http://10.60.85.201/'
-    fallback: 'http://10.60.17.43:8080/gdzcgl/'
+    fallback: 'http://10.60.82.185/'
+    // fallback: 'http://10.60.17.43:8080/gdzcgl/'
   },
   getBaseUrl() {
     return this.baseUrl.fallback

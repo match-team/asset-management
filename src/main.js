@@ -5,7 +5,9 @@ import ViewUI from 'view-design'
 import store from './store'
 import 'view-design/dist/styles/iview.css'
 import './styles/reset.less'
+import Print from 'vue-print-nb'
 
+Vue.use(Print) //注册
 import './styles/common.less'
 Vue.config.productionTip = false
 Vue.use(ViewUI)
