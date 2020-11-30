@@ -1,5 +1,4 @@
 export function deepClone(value, hash = new WeakMap()) {
-  console.log(hash)
   if (value == undefined) return value
 
   if (typeof value !== 'object') return value

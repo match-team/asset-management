@@ -34,9 +34,20 @@ export default {
       breadcrumbName: ''
     }
   },
+  watch: {
+    $route() {
+      this.init()
+    }
+  },
   mounted() {
-    this.breadcrumb = JSON.parse(localStorage.getItem('breadcrumb'))
-    this.breadcrumbName = this.breadcrumb.meta.name
+    this.init()
+  },
+  methods: {
+    init() {
+      this.breadcrumb = JSON.parse(localStorage.getItem('breadcrumb'))
+      this.breadcrumbName = this.breadcrumb.meta.name
+      console.log(this.breadcrumb)
+    }
   }
 }
 </script>

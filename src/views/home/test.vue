@@ -153,7 +153,7 @@ export default {
       //附件图片预览
       fjvisible: false,
       fjUrl: '',
-      pages: 10,
+      pages: 100,
       uploadFileList: [],
       inputProp: '',
       //新添加的属性
@@ -186,7 +186,7 @@ export default {
       addattributeModal: false,
       modalShow: false,
       current: 1,
-      size: 7,
+      size: 10,
       cityList: [
         {
           value: '欧冶采购',
@@ -352,10 +352,14 @@ export default {
       attributeIndex++
       let key = `pro${attributeIndex}Desc`
       let key1 = `pro${attributeIndex}`
-      this.newAttribute.push({ [key]: this.newValue })
+      console.log(key, key1, this.newAttribute)
+      this.newAttribute.push({ [key]: this.newValue})
       _arr.push({ [key]: this.newValue, [key1]: '属性值' })
       this.newValue = ''
       this.addattributeModal = false
+    },
+    show(e) {
+      console.log(e)
     },
     largeModalAdd() {
       this.modalShow = true
@@ -383,6 +387,7 @@ export default {
       _arr[index][key] = value
       console.log(_arr)
     },
+    ok() {},
     // 新建
     async handleAdd() {
       this.formModal.createTime = moment(this.formModal.createTime).format('YYYY-MM-DD')
@@ -411,6 +416,7 @@ export default {
         this.$Message.error(res.msg)
       }
     },
+    cancel() {},
     async getList(page) {
       this.loadingTable = true
       try {
@@ -422,8 +428,6 @@ export default {
         })
         if (res.success) {
           this.tableList = res.detail.records
-          this.pages = Number(res.detail.total)
-
           // this.tableList.forEach(item => {
           // for (let key in item) {
           //   this.columnsTable.push({
