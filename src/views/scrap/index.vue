@@ -1,29 +1,30 @@
-<!-- 报废页面 -->
+
+<!-- 盘点页面 -->
 <template>
-  <div class="container" style="overflow-y: auto">
+  <div class="container">
     <!-- 顶部栏 -->
-    <div style="margin-bottom: 20px">
-      <Button @click="modalShow = true" type="primary">新建</Button>
+    <div class="table_top">
+      <div>
+        <Button type="success" @click="largeModalAdd">新建</Button>
+        <Select v-model="ownerCompany" style="width: 200px" placeholder="请选择部门">
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
+            item.label
+          }}</Option>
+        </Select>
 
-      <Select v-model="company" style="width: 200px; margin: 0 10px" placeholder="请选择公司">
-        <Option v-for="item in companies" :value="item.value" :key="item.value">
-          {{ item.label }}
-        </Option>
-      </Select>
-
-      <Input placeholder="请输入关键字" style="width: auto; margin-right: 10px" v-model="searchKey">
-        <Icon type="ios-search" slot="suffix" />
-      </Input>
-      <Button type="info" @click="queryPage(1)">查询</Button>
+        <Input
+          v-model="searchKey"
+          placeholder="请输入关键字"
+          style="width: auto; margin-right: 10px"
+        >
+          <Icon type="ios-search" slot="suffix" />
+        </Input>
+        <Button type="info" @click="handleSearch">查询</Button>
+      </div>
     </div>
 
-    <Table
-      border
-      :columns="columns"
-      :data="pageResult.detail"
-      height="400"
-      @on-selection-change="changeSelect"
-    ></Table>
+    <!-- 表格内容 -->
+    <Table border :columns="columns2" height="400" :data="data3"></Table>
     <Page
       :total="pages"
       :current="pageNum"
@@ -33,61 +34,61 @@
       class="pagenation"
     />
 
-    <!-- 弹窗-报废功能确认流程 -->
-
-    <Modal v-model="modalShow" title="新建报废" @on-ok="okNew" width="900">
+    <!-- 弹窗-新建 -->
+    <Modal v-model="modalShow2" title="新建盘点" @on-ok="okNew" width="900">
       <Row :gutter="16">
-        <Col span="12">
-          <label>报废资产：</label>
-          <Select v-model="recordObj.goodsId" placeholder="报废资产">
-            <Option v-for="item in goods" :value="item.id" :key="item.id">
-              {{ item.goodsName }}
-            </Option>
-          </Select>
-        </Col>
-        <Col span="12"><label>使用公司/部门：</label><Input v-model="recordObj.ownerInfo" /></Col>
-      </Row>
-      <Row :gutter="16">
-        <Col span="12">
-          <label>报废日期：</label>
-          <DatePicker
-            type="datetime"
-            format="yyyy-MM-dd HH:mm"
-            placeholder="yyyy-MM-dd HH:mm"
-            @on-change="changeDateTime"
-            style="width: 300px"
-          >
-          </DatePicker>
-        </Col>
         <Col span="12"
-          ><label>是否一键转卖：</label>
-          <RadioGroup v-model="recordObj.flag1">
-            <Radio label="1">是</Radio>
-            <Radio label="0">不是</Radio>
-          </RadioGroup>
+          ><label>盘点名称：<span style="color: red">*</span></label
+          ><Input v-model="recordObj.name"
+        /></Col>
+        <Col span="12"><label>备注：</label><Input v-model="recordObj.content" /></Col>
+      </Row>
+
+      <Row :gutter="16">
+        <Col span="12"
+          ><label
+            style="
+              display: block;
+              height: 32px;
+              width: 100px;
+              background-color: #7b88ff;
+              color: white;
+              line-height: 32px;
+              text-align: center;
+              margin: 15px 0px;
+            "
+            >盘点范围</label
+          ></Col
+        >
+      </Row>
+      <Row :gutter="16">
+        <Col span="12">
+          <label>盘点时间：</label>
+          <DatePicker
+            type="date"
+            placeholder="请选择开始日期"
+            v-model="recordObj.createTime"
+          ></DatePicker>
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"><label>说明：</label><Input v-model="recordObj.readme" /></Col>
+        <Col span="12"> <label>所属公司：</label><Input v-model="recordObj.ownerCompany" /></Col>
+        <Col span="12">
+          <label>资产分类：</label>
+          <Input v-model="recordObj.goodsType" />
+        </Col>
       </Row>
     </Modal>
-
-    <!-- 弹窗-导入文件 -->
-    <Modal v-model="fileVisible" title="导入文件">
-      <Row>
-        <Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-          <div style="padding: 20px 0">
-            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>点击或者拖拽到这里上传</p>
-          </div>
-        </Upload>
-      </Row>
+    <!-- 盘点明细 -->
+    <Modal v-model="detailShow" title="盘点明细" @on-ok="ok" @on-cancel="cancel" width="1200">
+      <Table border :columns="columnsModal" :data="detailArr"></Table>
     </Modal>
   </div>
 </template>
 
 <script>
-import axios from '@/utils/axios'
+import axios from '../../utils/axios.js'
+import { inventoryDetail } from '@/api/warehousing.js'
 
 export default {
   name: 'index',
@@ -96,83 +97,78 @@ export default {
   props: {},
   data() {
     return {
-      selectArr: [],
+      searchKey: '',
+      ownerCompany: '',
+      value: '',
+      modalShow2: false,
       fileVisible: false,
-      columns: [
+      cityList: [
         {
-          title: '资产编码',
-          key: 'goodsNum',
-          width: 140,
-          fixed: 'center'
+          value: '欧冶采购',
+          label: '欧冶采购'
         },
         {
-          title: '资产名称',
-          key: 'goodsName',
-          width: 100
+          value: '欧冶金融',
+          label: '欧冶金融'
         },
         {
-          title: '办理状态',
+          value: '欧冶云商',
+          label: '欧冶云商'
+        },
+        {
+          value: '东方钢铁',
+          label: '东方钢铁'
+        },
+        {
+          value: '欧冶物流',
+          label: '欧冶物流'
+        }
+      ],
+      model1: '',
+
+      columns2: [
+        {
+          title: '盘点单名称',
+          key: 'name'
+        },
+        {
+          title: '分配用户',
+          key: 'createUserName'
+        },
+        {
+          title: '创建人',
+          key: 'createUserid'
+        },
+        {
+          title: '创建时间',
+          key: 'createTime'
+        },
+        {
+          title: '状态',
           key: 'status',
-          width: 100,
-          render: function (h, params) {
-            if (params.row.status == 1) {
-              return h('span', '通过')
+          render: (h, params) => {
+            let value = params.row.status
+
+            console.log(value)
+            let statusText
+            if (value == 0) {
+              statusText = '待处理'
+            } else {
+              statusText = '已处理'
             }
-            if (params.row.status == 0) {
-              return h('span', '待处理')
-            }
-            if (params.row.status == 2) {
-              return h('span', '拒绝')
-            }
-            return h('span', '未知')
+
+            return h('span', statusText)
           }
         },
         {
-          title: '是否一键转卖',
-          key: 'status',
-          width: 140,
-          render: function (h, params) {
-            if (params.row.flag1 == 1) {
-              return h('span', '是')
-            }
-            if (params.row.flag1 == 0) {
-              return h('span', '不是')
-            }
-            return h('span', '不是')
-          }
-        },
-        {
-          title: '报废单号',
-          key: 'billNo',
-          width: 180
-        },
-        {
-          title: '使用公司/部门',
-          key: 'ownerInfo',
-          width: 140
-        },
-        {
-          title: '报废日期',
-          key: 'destroyDate',
-          width: 100
-        },
-        {
-          title: '申请人',
-          key: 'applyUserid',
-          width: 100
-        },
-        {
-          title: '备注',
-          key: 'readme',
-          width: 200
+          title: '判断报告',
+          key: 'report'
         },
         {
           title: '操作',
           key: 'action',
-          width: 260,
+          width: 100,
           render: (h, params) => {
-            let id = params.row.id
-            let that = this
             return h('div', [
               h(
                 'Button',
@@ -185,108 +181,244 @@ export default {
                     marginRight: '15px'
                   },
                   on: {
-                    click: function () {
-                      that.openSureAll(true, id)
+                    click: () => {
+                      this.detailShow = true
+                      this.pdDetail(params)
                     }
                   }
                 },
-                '报废'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '15px'
-                  },
-                  on: {
-                    click: function () {
-                      that.openSureAll(false, id)
-                    }
-                  }
-                },
-                '驳回'
+                '盘点明细'
               )
             ])
           }
         }
-      ], //表格标签
-      modalShow: false,
-      searchKey: '', //查询关键字
-      goods: [], //物资明细
-      companies: [
+      ],
+      data3: [
         {
-          value: '东方钢铁',
-          label: '东方钢铁'
-        },
-        {
-          value: '欧冶金服',
-          label: '欧冶金服'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          name: 'John Brown',
+          createUserid: 18,
+          address: 'New York No. 1 Lake Park',
+          province: 'America',
+          city: 'New York',
+          zip: 100000,
+          zip1: 'test'
         }
-      ], //公司集合
-      company: '', //公司
+      ],
+      columnsModal: [
+        {
+          title: '盘点单名称',
+          key: 'goodsName',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.goodsName)
+          }
+        },
+        {
+          title: '资产编号',
+          key: 'goodsNum',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.goodsNum)
+          }
+        },
+        {
+          title: '资产类别',
+          key: 'goodsType',
+          render: (h, params) => {
+            console.log(this.detailArr[params.index])
+            return h('span', this.detailArr[params.index].goodsRecord.goodsType)
+          }
+        },
+        {
+          title: '标准型号',
+          key: 'standardModel',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.standardModel)
+          }
+        },
+        {
+          title: '计量单位',
+          key: 'meteringUnit',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.meteringUnit)
+          }
+        },
+
+        {
+          title: '规格型号',
+          key: 'specsModel',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.specsModel)
+          }
+        },
+        {
+          title: '购入日期：',
+          key: 'buyTime',
+          width: 180,
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.buyTime)
+          }
+        },
+        {
+          title: '所属公司',
+          key: 'ownerCompany',
+          render: (h, params) => {
+            console.log(params)
+            return h('span', this.detailArr[params.index].goodsRecord.ownerCompany)
+          }
+        },
+        {
+          title: '使用部门',
+          key: 'department',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.department)
+          }
+        },
+        {
+          title: '使用人',
+          key: 'ownerId',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.ownerId)
+          }
+        },
+        {
+          title: '管理员',
+          key: 'adminId',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.adminId)
+          }
+        },
+        {
+          title: '存放地点',
+          key: 'storePlace',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.storePlace)
+          }
+        },
+        {
+          title: '备注',
+          key: 'remark',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.remark)
+          }
+        }
+      ],
+      //盘点弹窗
+      detailShow: false,
+      //盘点明细数据
+      detailArr: [],
+      //分页器数据
+      pages: 0,
       pageNum: 1,
       pageSize: 10,
-      pages: 100,
-      pageResult: {
-        detail: []
+
+      //创建表单调试数据
+      formItem: {
+        input: '',
+        select: '',
+        radio: 'male',
+        checkbox: [],
+        switch: true,
+        date: '',
+        date2: '',
+        time: '',
+        slider: [20, 50],
+        textarea: ''
+      },
+      //创建表单调试数据
+      model20: ['beijing', 'shenzhen'],
+      options4: [],
+      loading4: false,
+      list2: [
+        {
+          value: 'beijing',
+          label: '北京'
+        },
+        {
+          value: 'shanghai',
+          label: '上海'
+        },
+        {
+          value: 'shenzhen',
+          label: '深圳'
+        },
+        {
+          value: 'hangzhou',
+          label: '杭州'
+        },
+        {
+          value: 'guangzhou',
+          label: '广州'
+        }
+      ],
+      formValidate: {
+        name: '',
+        mail: '',
+        city: '',
+        gender: '',
+        interest: [],
+        date: '',
+        time: '',
+        desc: ''
       },
       recordObj: {
         id: null,
-        goodsId: '',
-        ownerInfo: '',
-        destroyDate: '',
-        readme: '',
-        flag1: '1'
+        name: '',
+        content: '', //盘点内容
+        goodsType: '', //资产分类
+        ownerCompany: '', //所属公司
+        createUserid: '2',
+        status: '0',
+        createTime: ''
       } //新建/编辑记录对象
     }
   },
   computed: {},
   watch: {},
-  created() {
-    this.loadGoods()
+  created() {},
+  mounted() {
+    //初始化读取列表
     this.queryPage(1)
   },
-  mounted() {},
   beforeDestroy() {},
   methods: {
+    //盘点明细
+    async pdDetail(params) {
+      console.log(params.row.id)
+      let id = params.row.id
+      const res = await inventoryDetail(id)
+
+      this.detailArr = res.detail.checkDetail
+      console.log(this.detailArr)
+    },
+    //切换新建弹窗
+    largeModalAdd() {
+      this.modalShow2 = true
+    },
+    handleSearch() {
+      this.queryPage()
+    },
+    //新建
+    handleAdd() {},
+    //分页器改变
+    changePageNum(num) {
+      this.queryPage(num)
+    },
+
+    //分页查询
     queryPage(pageNum) {
       if (pageNum) {
         this.pageNum = pageNum
       }
       let params = {
-        current: this.pageNum,
-        size: this.pageSize,
-        readme: this.searchKey,
-        ownerInfo: this.company
+        page: this.pageNum,
+        limit: 10
       }
       let that = this
-      let url = '/rest/destroyrecord/list'
+      let url = '/rest/check/list'
       console.log('params' + JSON.stringify(params))
       axios.get(url, { params: params }).then(
         function (r) {
-          console.log(r)
           if (r.success) {
-            that.pageResult.detail = r.detail.records
+            that.data3 = r.detail.records
             that.pages = r.detail.total
             return
           }
@@ -298,16 +430,11 @@ export default {
         }
       )
     },
-    loadGoods() {
-      let that = this
-      let url = '/goodsRecord/allGoodsRecordList'
-      axios.get(url).then(function (r) {
-        console.log(r)
-        if (r.success) {
-          that.goods = r.detail
-        }
-      })
-    },
+
+    //弹窗-上传文件
+    ok() {},
+    cancel() {},
+
     okNew() {
       let that = this
       let params = this.recordObj
@@ -315,7 +442,11 @@ export default {
         this.$Notice.error({ title: '错误', desc: '请填写信息' })
         return false
       }
-      let url = '/rest/destroyrecord/add'
+      if (!params.name) {
+        this.$Notice.error({ title: '错误', desc: '请填写盘点名称' })
+        return false
+      }
+      let url = '/rest/check/save'
       console.log('params' + JSON.stringify(params))
       axios.post(url, params).then(
         function (r) {
@@ -332,85 +463,54 @@ export default {
         }
       )
     },
-    changePageNum(num) {
-      this.queryPage(num)
-    },
-    changeDateTime: function (val) {
-      this.recordObj.destroyDate = val
-    },
-    openSureAll: function (mark, id) {
-      let that = this
-      this.$Modal.confirm({
-        title: '是否确认',
-        onOk: () => {
-          that.xx(mark, id)
-        },
-        onCancel: () => {}
-      })
-    },
-    changeSelect: function (selection) {
-      this.selectArr = selection
-    },
-    xx: function (mark, id) {
-      if (mark) {
-        this.passMethod(id)
+
+    //表单调试函数
+    remoteMethod4(query) {
+      if (query !== '') {
+        this.loading4 = true
+        setTimeout(() => {
+          this.loading4 = false
+          this.options4 = this.list2.filter(item => item.label.indexOf(query) > -1)
+        }, 200)
       } else {
-        this.notPassMethod(id)
+        this.options4 = []
       }
     },
-    passMethod: function (id) {
-      let that = this
-      let url = '/rest/destroyrecord/auditPass/' + id
-      axios.get(url).then(
-        function (r) {
-          console.log(r)
-          if (r.success) {
-            that.queryPage(1)
-            return
-          }
-          that.$Notice.error({ title: '错误', desc: r.msg })
-        },
-        function (e) {
-          console.log(e)
-          that.$Notice.error({ title: '错误', desc: '系统异常' })
-        }
-      )
+    setDefaultOptions(options) {
+      this.options4 = options
     },
-    notPassMethod: function (id) {
-      debugger
-      let that = this
-      let url = '/rest/destroyrecord/auditNoPass/' + id
-      axios.get(url).then(
-        function (r) {
-          console.log(r)
-          if (r.success) {
-            that.queryPage(1)
-            return
-          }
-          that.$Notice.error({ title: '错误', desc: r.msg })
-        },
-        function (e) {
-          console.log(e)
-          that.$Notice.error({ title: '错误', desc: '系统异常' })
+    //表单提交的两个按钮
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          this.$Message.success('成功!')
+        } else {
+          this.$Message.error('请完善表格!')
         }
-      )
+      })
+    },
+    handleReset(name) {
+      this.$refs[name].resetFields()
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+/deep/ .ivu-table-header thead tr th,
+/deep/ .ivu-table-fixed-header thead tr th {
+  text-align: center;
+}
+/deep/ .ivu-date-picker {
+  width: 100%;
+}
 .table_top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-.add_attribute {
-  margin-top: 10px;
-  padding: 10px 0;
-  border-top: 1px solid @border-color;
-}
+
 .ivu-col {
   margin: 0 10px;
   display: flex;
@@ -419,5 +519,8 @@ export default {
   label {
     width: 100px;
   }
+}
+.table_top .ivu-select {
+  margin: 0 10px;
 }
 </style>

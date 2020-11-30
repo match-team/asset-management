@@ -80,7 +80,7 @@ export default {
     toLogin: function () {
       let that = this
       let params = this.param
-      let url = 'http://10.60.80.86/rest/customLogin'
+      let url = '/rest/customLogin'
       axios.post(url, null, { params: params }).then(
         function (r) {
           if (r.success) {

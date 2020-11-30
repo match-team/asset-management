@@ -14,10 +14,6 @@
         </Input>
         <Button type="info" @click="queryPage(1)">查询</Button>
       </div>
-      <div>
-        <Button type="info" style="margin-right: 10px" @click="Importfile">导入</Button>
-        <Button type="success">导出</Button>
-      </div>
     </div>
     <Table border :columns="columns" :data="pageResult.detail" height="400"></Table>
     <Page :total="pages" :current="pageNum" :page-size="pageSize" @on-change="changePageNum" show-total class="pagenation"  />
@@ -40,12 +36,7 @@
       <Row :gutter="16">
         <Col span="12">
           <label>领用日期：</label>
-          <DatePicker type="datetime"
-                      format="yyyy-MM-dd HH:mm"
-                      placeholder="yyyy-MM-dd HH:mm"
-                      @on-change="changeDateTime"
-                      style="width: 300px">
-          </DatePicker>
+          <DatePicker :editable="false" @on-change="changeDateTime" type="date"></DatePicker>
         </Col>
         <Col span="12"><label>使用区域：</label><Input v-model="recordObj.area" /></Col>
       </Row>
@@ -82,15 +73,8 @@
         </Col>
       </Row>
     </Modal>
-    <Modal v-model="fileVisible" title="导入文件" @on-ok="okImport" >
-      <Row>
-        <Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-          <div style="padding: 20px 0">
-            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>点击或者拖拽到这里上传</p>
-          </div>
-        </Upload>
-      </Row>
+    <Modal title="附件图片预览" v-model="fjvisible">
+      <img :src="fjUrl" style="width: 100%"/>
     </Modal>
   </div>
 </template>
@@ -182,18 +166,34 @@ export default {
           title: '附件',
           key: 'filePaths',
           width: 100,
-          render: (h,params) => {
+          render: (h, params) => {
+            let that =this;
             let filePaths = params.row.filePaths;
-            let fileA=[];
-            if (filePaths){
+            let fileA = [];
+            if (filePaths) {
               let list = filePaths.split(";");
               for (let i = 0; i < list.length; i++) {
                 let fileName = list[i];
-                fileA.push(h("a",{attrs:{href:axios.defaults.baseURL+fileName,target:"_blank"}},fileName))
+                let fileUrl = axios.defaults.baseURL + fileName;
+                fileA.push(h("Button", {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    "click": function () {
+                      that.fjvisible = true;
+                      that.fjUrl = fileUrl;
+                    }
+                  }
+                }, fileName))
               }
             }
-            if (fileA.length==0){
-              return h('span', {},'无')
+            if (fileA.length == 0) {
+              return h('span', {}, '无')
             }
             return h('span', fileA)
           }
@@ -206,32 +206,31 @@ export default {
         detail:[
         ]
       },
+      //附件图片预览
+      fjvisible: false,
+      fjUrl: '',
       fileVisible: false,
       modalShow: false,
-      companies: [
+      companies:  [
+        {
+          value: '欧冶采购',
+          label: '欧冶采购'
+        },
+        {
+          value: '欧冶金融',
+          label: '欧冶金融'
+        },
+        {
+          value: '欧冶云商',
+          label: '欧冶云商'
+        },
         {
           value: '东方钢铁',
           label: '东方钢铁'
         },
         {
-          value: '欧冶金服',
-          label: '欧冶金服'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          value: '欧冶物流',
+          label: '欧冶物流'
         }
       ],//公司集合
       company: '',//公司
@@ -376,5 +375,7 @@ export default {
     width: 100px;
   }
 }
-
+/deep/ .ivu-date-picker {
+  width: 100%;
+}
 </style>
