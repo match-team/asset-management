@@ -49,18 +49,38 @@
       <Row :gutter="16">
         <Col span="12"><label>说明：</label><Input v-model="recordObj.readme"/></Col>
       </Row>
+      <Row>
+        <Col span="24">上传图片:</Col>
+        <Col span="24">
+          <div class="demo-upload-list" v-if="recordObj.filePaths">
+            <img :src="baseURL+recordObj.filePaths"
+                 style="width: 58px; height: 58px; line-height: 58px"/>
+          </div>
+          <Upload
+              ref="upload"
+              :show-upload-list="false"
+              :default-file-list="uploadObj.defaultList"
+              :on-success="fileHandleSuccess"
+              :format="['jpg', 'jpeg', 'png']"
+              :max-size="2048"
+              :on-format-error="uploadObj.handleFormatError"
+              :on-exceeded-size="uploadObj.handleSizeOutError"
+              :before-upload="uploadObj.handleBeforeUpload"
+              multiple
+              type="drag"
+              name="files"
+              :action="fileUrl"
+              style="display: inline-block; width: 58px">
+            <div style="width: 58px; height: 58px; line-height: 58px">
+              <Icon type="ios-camera" size="20"></Icon>
+            </div>
+          </Upload>
+        </Col>
+      </Row>
     </Modal>
 
-    <!-- 弹窗-导入文件 -->
-    <Modal v-model="fileVisible" title="导入文件" >
-      <Row>
-        <Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-          <div style="padding: 20px 0">
-            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>点击或者拖拽到这里上传</p>
-          </div>
-        </Upload>
-      </Row>
+    <Modal title="附件图片预览" v-model="fjvisible">
+      <img :src="fjUrl" style="width: 100%"/>
     </Modal>
 
   </div>
@@ -76,6 +96,23 @@ export default {
   props: {},
   data() {
     return {
+      uploadObj: {
+        defaultList: [],
+        handleFormatError: function () {
+          alert("格式不正确")
+        },
+        handleSizeOutError: function () {
+          alert("个数超了")
+        },
+        handleBeforeUpload: function () {
+          return true;
+        }
+      },//上传对象
+      //附件图片预览
+      fjvisible: false,
+      fjUrl: '',
+      baseURL: axios.defaults.baseURL,
+      fileUrl: axios.defaults.baseURL + "rest/saveFile",
       selectArr:[],
       fileVisible: false,
       columns: [
@@ -145,6 +182,42 @@ export default {
           title: '备注',
           key: 'readme',
           width: 200
+        },
+        {
+          title: '附件',
+          key: 'filePaths',
+          width: 100,
+          render: (h, params) => {
+            let that =this;
+            let filePaths = params.row.filePaths;
+            let fileA = [];
+            if (filePaths) {
+              let list = filePaths.split(";");
+              for (let i = 0; i < list.length; i++) {
+                let fileName = list[i];
+                let fileUrl = axios.defaults.baseURL + fileName;
+                fileA.push(h("Button", {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    "click": function () {
+                      that.fjvisible = true;
+                      that.fjUrl = fileUrl;
+                    }
+                  }
+                }, fileName))
+              }
+            }
+            if (fileA.length == 0) {
+              return h('span', {}, '无')
+            }
+            return h('span', fileA)
+          }
         },
         {
           title: '操作',
@@ -231,7 +304,8 @@ export default {
         ownerInfo: "",
         destroyDate: "",
         readme: "",
-        flag1:"1"
+        flag1:"1",
+        filePaths:""
       }//新建/编辑记录对象
     }
   },
@@ -360,7 +434,13 @@ export default {
         console.log(e);
         that.$Notice.error({title: '错误', desc: '系统异常'});
       })
+    },
+    fileHandleSuccess(r) {
+    console.log(r);
+    if (r.success) {
+      this.recordObj.filePaths = r.detail;
     }
+  }
   }
 }
 </script>
