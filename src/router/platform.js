@@ -1,6 +1,6 @@
 import PlatformLayout from '@/views/home/index'
 import Inventory from '@/views/inventory/index'
-import Scarp from '@/views/scrap/index'
+
 import Servicing from '@/views/servicing/index'
 export default [
   {
@@ -10,20 +10,20 @@ export default [
       name: '资产入库'
     }
   },
-  {
-    path: '/scrap',
-    component: Scarp
-  },
+
   {
     path: '/inventory',
-    component: Inventory
+    component: Inventory,
+    meta: {
+      name: '盘点管理'
+    }
   },
-  {
-    path: '/scrap',
-    component: Scarp
-  },
+
   {
     path: '/servicing',
-    component: Servicing
+    component: Servicing,
+    meta: {
+      name: '维修管理'
+    }
   }
 ]

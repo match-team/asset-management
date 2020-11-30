@@ -1,51 +1,48 @@
 <template>
   <aside class="platform-sidebar">
     <Menu theme="dark" :active-name="pageMark" @on-select="handleSelect">
-      <MenuGroup title="资产入库">
-        <router-link to="platform">
-          <MenuItem name="资产入库">
-            <Icon type="md-document" />
-            资产入库
-          </MenuItem>
-        </router-link>
-      </MenuGroup>
-      <MenuGroup title="资产管理">
-        <router-link to="bill">
-          <MenuItem name="资产入账">
-            <Icon type="md-heart" />
-            资产入账
-          </MenuItem>
-        </router-link>
-        <router-link to="give">
-          <MenuItem name="资产领用">
-            <Icon type="md-chatbubbles" />
-            资产领用
-          </MenuItem>
-        </router-link>
-        <router-link to="back">
-          <MenuItem name="资产退库"> <Icon type="md-leaf" />资产退库 </MenuItem>
-        </router-link>
-      </MenuGroup>
-      <MenuGroup title="物质管理">
-        <router-link to="servicing">
-          <MenuItem name="维修管理">
-            <Icon type="md-heart" />
-            维修管理
-          </MenuItem>
-        </router-link>
-        <router-link to="inventory">
-          <MenuItem name="盘点管理">
-            <Icon type="md-leaf" />
-            盘点管理
-          </MenuItem>
-        </router-link>
-        <router-link to="scrap">
-          <MenuItem name="报废处理">
-            <Icon type="md-leaf" />
-            报废处理
-          </MenuItem>
-        </router-link>
-      </MenuGroup>
+      <img src="../assets/images/ouyeellogo.png" alt="" class="img-logo" />
+      <router-link to="platform">
+        <MenuItem name="资产入库">
+          <Icon type="md-document" />
+          资产入库
+        </MenuItem>
+      </router-link>
+
+      <router-link to="bill">
+        <MenuItem name="资产入账">
+          <Icon type="md-heart" />
+          资产入账
+        </MenuItem>
+      </router-link>
+      <router-link to="give">
+        <MenuItem name="资产领用">
+          <Icon type="md-chatbubbles" />
+          资产领用
+        </MenuItem>
+      </router-link>
+      <router-link to="back">
+        <MenuItem name="资产退库"> <Icon type="md-albums" />资产退库 </MenuItem>
+      </router-link>
+
+      <router-link to="servicing">
+        <MenuItem name="维修管理">
+          <Icon type="md-bookmarks" />
+          维修管理
+        </MenuItem>
+      </router-link>
+      <router-link to="inventory">
+        <MenuItem name="盘点管理">
+          <Icon type="md-leaf" />
+          盘点管理
+        </MenuItem>
+      </router-link>
+      <router-link to="scrap">
+        <MenuItem name="报废处理">
+          <Icon type="md-color-palette" />
+          报废处理
+        </MenuItem>
+      </router-link>
     </Menu>
   </aside>
 </template>
@@ -68,6 +65,12 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.img-logo {
+  position: relative;
+  left: 40px;
+  margin: 10px 0;
+  width: 56%;
+}
 a {
   color: #eee;
 }

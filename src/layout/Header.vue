@@ -6,19 +6,6 @@
         <Icon type="logo-buffer"></Icon>{{ breadcrumbName }}
       </BreadcrumbItem>
     </Breadcrumb>
-    <Dropdown trigger="click" style="margin-left: 20px">
-      <a href="javascript:void(0)" class="header-dropdown">
-        <img src="../assets/images/drown.png" alt="" class="header-dropdown-img" />
-        <Icon type="ios-arrow-down"></Icon>
-      </a>
-      <DropdownMenu slot="list">
-        <DropdownItem>欧冶云商</DropdownItem>
-        <DropdownItem>欧冶采购</DropdownItem>
-        <DropdownItem>欧冶物流</DropdownItem>
-        <DropdownItem>东方钢铁</DropdownItem>
-        <DropdownItem>欧冶金融</DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
   </header>
 </template>
 
@@ -46,7 +33,6 @@ export default {
     init() {
       this.breadcrumb = JSON.parse(localStorage.getItem('breadcrumb'))
       this.breadcrumbName = this.breadcrumb.meta.name
-      console.log('面包屑')
     }
   }
 }
