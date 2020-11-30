@@ -1,7 +1,7 @@
 <template>
   <div class="land_body">
     <div class="land">
-      <div class="land_logo"><img src="/imgs/ouyeellogo.png" /></div>
+      <div class="land_logo"><img src="/gdzcgl/imgs/ouyeellogo.png" /></div>
       <div class="land_c">
         <h3>用户登录</h3>
         <form action="" method="get">
@@ -115,7 +115,7 @@ input {
 .land_body {
   height: 100%;
   padding-top: 0px;
-  background: url(/imgs/land_bg.jpg) center no-repeat;
+  background: url(/gdzcgl/imgs/land_bg.jpg) center no-repeat;
   background-size: cover;
 }
 .land {
@@ -172,7 +172,7 @@ input {
   top: 50%;
   margin-top: -23px;
   left: 1px;
-  background: url(/imgs/user_ico.png) #fff 10px center no-repeat;
+  background: url(/gdzcgl/imgs/user_ico.png) #fff 10px center no-repeat;
 }
 .land_c .pwd_text em {
   width: 36px;
@@ -182,7 +182,7 @@ input {
   top: 50%;
   margin-top: -23px;
   left: 1px;
-  background: url(/imgs/pwd_ico.png) #fff 10px center no-repeat;
+  background: url(/gdzcgl/imgs/pwd_ico.png) #fff 10px center no-repeat;
 }
 .land_c .box .yzm_text {
   width: 148px;
@@ -205,7 +205,7 @@ input {
   height: 48px;
   display: block;
   float: left;
-  background: url(/imgs/bnt_sx.png) center no-repeat;
+  background: url(/gdzcgl/imgs/bnt_sx.png) center no-repeat;
   cursor: pointer;
 }
 .land_c .box .bnt_sx.hov {
@@ -250,7 +250,7 @@ input {
   line-height: 40px;
   text-indent: 50px;
   color: #fff;
-  background: url(/imgs/ts_ico.png) rgba(255, 0, 0, 0.8) 20px center no-repeat;
+  background: url(/gdzcgl/imgs/ts_ico.png) rgba(255, 0, 0, 0.8) 20px center no-repeat;
   position: absolute;
   left: 0px;
   bottom: -40px;
