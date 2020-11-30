@@ -46,7 +46,7 @@ export default {
     init() {
       this.breadcrumb = JSON.parse(localStorage.getItem('breadcrumb'))
       this.breadcrumbName = this.breadcrumb.meta.name
-      console.log(this.breadcrumb)
+      console.log('面包屑')
     }
   }
 }

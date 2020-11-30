@@ -22,6 +22,7 @@
     <Table class="mygrid" :loading="loadingTable" border :columns="columnsTable" :data="tableList">
     </Table>
     <Page
+      height="400"
       :total="pages"
       :current="current"
       :page-size="size"
@@ -61,7 +62,7 @@
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"><label>存放地点：</label><Input v-model="formModal.store_place" /></Col>
+        <Col span="12"><label>存放地点：</label><Input v-model="formModal.storePlace" /></Col>
         <Col span="12"><label>创建人：</label><Input v-model="formModal.createUser" /></Col>
       </Row>
       <Row :gutter="16">
@@ -176,7 +177,7 @@ export default {
         adminId: '',
 
         usedDate: '',
-        store_place: '',
+        storePlace: '',
         createUser: '',
         createTime: '',
         remark: ''
@@ -242,7 +243,7 @@ export default {
         {
           title: '计量单位',
           key: 'meteringUnit',
-          width: 200
+          width: 100
         },
         {
           title: '规格型号',
@@ -282,7 +283,7 @@ export default {
         },
         {
           title: '存放地点',
-          key: 'store_place',
+          key: 'storePlace',
           width: 100
         },
         {

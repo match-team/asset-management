@@ -1,27 +1,37 @@
 <!-- 报废页面 -->
 <template>
   <div class="container" style="overflow-y: auto">
-
     <!-- 顶部栏 -->
-    <div >
-      <Select v-model="company" style="width: 200px;margin: 0 10px;" placeholder="请选择公司">
+    <div style="margin-bottom: 20px">
+      <Button @click="modalShow = true" type="primary">新建</Button>
+
+      <Select v-model="company" style="width: 200px; margin: 0 10px" placeholder="请选择公司">
         <Option v-for="item in companies" :value="item.value" :key="item.value">
           {{ item.label }}
         </Option>
       </Select>
 
       <Input placeholder="请输入关键字" style="width: auto; margin-right: 10px" v-model="searchKey">
-        <Icon type="ios-search" slot="suffix"/>
+        <Icon type="ios-search" slot="suffix" />
       </Input>
       <Button type="info" @click="queryPage(1)">查询</Button>
     </div>
-      <!-- 右侧4个按钮 -->
-      <div >
-        <Button  @click="modalShow=true">新建</Button>
-      </div>
-    <!-- 表格内容 -->
-    <Table border  :columns="columns" :data="pageResult.detail" height="400" @on-selection-change="changeSelect"></Table>
-    <Page :total="pages" :current="pageNum" :page-size="pageSize" @on-change="changePageNum" show-total class="pagenation"  />
+
+    <Table
+      border
+      :columns="columns"
+      :data="pageResult.detail"
+      height="400"
+      @on-selection-change="changeSelect"
+    ></Table>
+    <Page
+      :total="pages"
+      :current="pageNum"
+      :page-size="pageSize"
+      @on-change="changePageNum"
+      show-total
+      class="pagenation"
+    />
 
     <!-- 弹窗-报废功能确认流程 -->
 
@@ -35,19 +45,22 @@
             </Option>
           </Select>
         </Col>
-        <Col span="12"><label>使用公司/部门：</label><Input v-model="recordObj.ownerInfo"/></Col>
+        <Col span="12"><label>使用公司/部门：</label><Input v-model="recordObj.ownerInfo" /></Col>
       </Row>
       <Row :gutter="16">
         <Col span="12">
           <label>报废日期：</label>
-          <DatePicker type="datetime"
-                      format="yyyy-MM-dd HH:mm"
-                      placeholder="yyyy-MM-dd HH:mm"
-                      @on-change="changeDateTime"
-                      style="width: 300px">
+          <DatePicker
+            type="datetime"
+            format="yyyy-MM-dd HH:mm"
+            placeholder="yyyy-MM-dd HH:mm"
+            @on-change="changeDateTime"
+            style="width: 300px"
+          >
           </DatePicker>
         </Col>
-        <Col span="12"><label>是否一键转卖：</label>
+        <Col span="12"
+          ><label>是否一键转卖：</label>
           <RadioGroup v-model="recordObj.flag1">
             <Radio label="1">是</Radio>
             <Radio label="0">不是</Radio>
@@ -55,12 +68,12 @@
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"><label>说明：</label><Input v-model="recordObj.readme"/></Col>
+        <Col span="12"><label>说明：</label><Input v-model="recordObj.readme" /></Col>
       </Row>
     </Modal>
 
     <!-- 弹窗-导入文件 -->
-    <Modal v-model="fileVisible" title="导入文件" >
+    <Modal v-model="fileVisible" title="导入文件">
       <Row>
         <Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
           <div style="padding: 20px 0">
@@ -70,12 +83,11 @@
         </Upload>
       </Row>
     </Modal>
-
   </div>
 </template>
 
 <script>
-import axios from "@/utils/axios";
+import axios from '@/utils/axios'
 
 export default {
   name: 'index',
@@ -84,13 +96,13 @@ export default {
   props: {},
   data() {
     return {
-      selectArr:[],
+      selectArr: [],
       fileVisible: false,
       columns: [
         {
           title: '资产编码',
           key: 'goodsNum',
-          width: 100,
+          width: 140,
           fixed: 'center'
         },
         {
@@ -102,42 +114,42 @@ export default {
           title: '办理状态',
           key: 'status',
           width: 100,
-          render:function (h,params){
-            if (params.row.status==1){
-              return h('span','通过');
+          render: function (h, params) {
+            if (params.row.status == 1) {
+              return h('span', '通过')
             }
-            if (params.row.status==0){
-              return h('span','待处理');
+            if (params.row.status == 0) {
+              return h('span', '待处理')
             }
-            if (params.row.status==2){
-              return h('span','拒绝');
+            if (params.row.status == 2) {
+              return h('span', '拒绝')
             }
-            return h('span','未知');
+            return h('span', '未知')
           }
         },
         {
           title: '是否一键转卖',
           key: 'status',
-          width: 100,
-          render:function (h,params){
-            if (params.row.flag1==1){
-              return h('span','是');
+          width: 140,
+          render: function (h, params) {
+            if (params.row.flag1 == 1) {
+              return h('span', '是')
             }
-            if (params.row.flag1==0){
-              return h('span','不是');
+            if (params.row.flag1 == 0) {
+              return h('span', '不是')
             }
-            return h('span','不是');
+            return h('span', '不是')
           }
         },
         {
           title: '报废单号',
           key: 'billNo',
-          width: 100
+          width: 180
         },
         {
           title: '使用公司/部门',
           key: 'ownerInfo',
-          width: 100
+          width: 140
         },
         {
           title: '报废日期',
@@ -158,52 +170,53 @@ export default {
           title: '操作',
           key: 'action',
           width: 260,
-          render: (h,params) => {
-            let id=params.row.id;
-            let that=this;
+          render: (h, params) => {
+            let id = params.row.id
+            let that = this
             return h('div', [
               h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '15px'
-                    },
-                    on:{
-                      "click":function (){
-                        that.openSureAll(true,id);
-                      }
-                    }
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
                   },
-                  '报废'
+                  style: {
+                    marginRight: '15px'
+                  },
+                  on: {
+                    click: function () {
+                      that.openSureAll(true, id)
+                    }
+                  }
+                },
+                '报废'
               ),
               h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '15px'
-                    },
-                    on:{
-                      "click":function (){
-                        that.openSureAll(false,id);
-                      }
-                    }
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
                   },
-                  '驳回'
-              )])
+                  style: {
+                    marginRight: '15px'
+                  },
+                  on: {
+                    click: function () {
+                      that.openSureAll(false, id)
+                    }
+                  }
+                },
+                '驳回'
+              )
+            ])
           }
         }
-      ],//表格标签
+      ], //表格标签
       modalShow: false,
-      searchKey: "",//查询关键字
-      goods: [],//物资明细
+      searchKey: '', //查询关键字
+      goods: [], //物资明细
       companies: [
         {
           value: '东方钢铁',
@@ -229,8 +242,8 @@ export default {
           value: 'Canberra',
           label: 'Canberra'
         }
-      ],//公司集合
-      company: '',//公司
+      ], //公司集合
+      company: '', //公司
       pageNum: 1,
       pageSize: 10,
       pages: 100,
@@ -239,28 +252,26 @@ export default {
       },
       recordObj: {
         id: null,
-        goodsId: "",
-        ownerInfo: "",
-        destroyDate: "",
-        readme: "",
-        flag1:"1"
-      }//新建/编辑记录对象
+        goodsId: '',
+        ownerInfo: '',
+        destroyDate: '',
+        readme: '',
+        flag1: '1'
+      } //新建/编辑记录对象
     }
   },
   computed: {},
   watch: {},
   created() {
-    this.loadGoods();
-    this.queryPage(1);
+    this.loadGoods()
+    this.queryPage(1)
   },
-  mounted() {
-  },
-  beforeDestroy() {
-  },
+  mounted() {},
+  beforeDestroy() {},
   methods: {
     queryPage(pageNum) {
       if (pageNum) {
-        this.pageNum = pageNum;
+        this.pageNum = pageNum
       }
       let params = {
         current: this.pageNum,
@@ -268,110 +279,121 @@ export default {
         readme: this.searchKey,
         ownerInfo: this.company
       }
-      let that = this;
-      let url = "/rest/destroyrecord/list";
-      console.log("params" + JSON.stringify(params));
-      axios.get(url, {params: params}).then(function (r) {
-        console.log(r);
-        if (r.success) {
-          that.pageResult.detail = r.detail.records;
-          that.pages = r.detail.total;
-          return;
+      let that = this
+      let url = '/rest/destroyrecord/list'
+      console.log('params' + JSON.stringify(params))
+      axios.get(url, { params: params }).then(
+        function (r) {
+          console.log(r)
+          if (r.success) {
+            that.pageResult.detail = r.detail.records
+            that.pages = r.detail.total
+            return
+          }
+          that.$Notice.error({ title: '错误', desc: r.msg })
+        },
+        function (e) {
+          console.log(e)
+          that.$Notice.error({ title: '错误', desc: '系统异常' })
         }
-        that.$Notice.error({title: '错误', desc: r.msg});
-      }, function (e) {
-        console.log(e);
-        that.$Notice.error({title: '错误', desc: '系统异常'});
-      })
+      )
     },
     loadGoods() {
-      let that = this;
-      let url = "/goodsRecord/allGoodsRecordList";
+      let that = this
+      let url = '/goodsRecord/allGoodsRecordList'
       axios.get(url).then(function (r) {
-        console.log(r);
+        console.log(r)
         if (r.success) {
           that.goods = r.detail
         }
       })
     },
     okNew() {
-      let that = this;
-      let params = this.recordObj;
+      let that = this
+      let params = this.recordObj
       if (!params) {
-        this.$Notice.error({title: '错误', desc: '请填写信息'});
-        return false;
+        this.$Notice.error({ title: '错误', desc: '请填写信息' })
+        return false
       }
-      let url = "/rest/destroyrecord/add";
-      console.log("params" + JSON.stringify(params));
-      axios.post(url, params).then(function (r) {
-        if (r.success) {
-          that.queryPage(1);
-          that.$Notice.success({title: '成功', desc: '添加成功'});
-          return
+      let url = '/rest/destroyrecord/add'
+      console.log('params' + JSON.stringify(params))
+      axios.post(url, params).then(
+        function (r) {
+          if (r.success) {
+            that.queryPage(1)
+            that.$Notice.success({ title: '成功', desc: '添加成功' })
+            return
+          }
+          that.$Notice.error({ title: '错误', desc: r.msg })
+        },
+        function (e) {
+          console.log(e)
+          that.$Notice.error({ title: '错误', desc: '系统异常' })
         }
-        that.$Notice.error({title: '错误', desc: r.msg});
-      }, function (e) {
-        console.log(e);
-        that.$Notice.error({title: '错误', desc: '系统异常'});
-      })
+      )
     },
-    changePageNum(num){
-      this.queryPage(num);
+    changePageNum(num) {
+      this.queryPage(num)
     },
-    changeDateTime:function (val){
-      this.recordObj.destroyDate=val;
+    changeDateTime: function (val) {
+      this.recordObj.destroyDate = val
     },
-    openSureAll:function (mark,id){
-      let that =this;
+    openSureAll: function (mark, id) {
+      let that = this
       this.$Modal.confirm({
         title: '是否确认',
         onOk: () => {
-          that.xx(mark,id);
+          that.xx(mark, id)
         },
-        onCancel: () => {
-        }
-      });
+        onCancel: () => {}
+      })
     },
-    changeSelect:function (selection){
-      this.selectArr=selection;
+    changeSelect: function (selection) {
+      this.selectArr = selection
     },
-    xx:function (mark,id){
-      if (mark){
+    xx: function (mark, id) {
+      if (mark) {
         this.passMethod(id)
-      }else{
+      } else {
         this.notPassMethod(id)
       }
     },
-    passMethod:function (id){
-      let that=this;
-      let url = "/rest/destroyrecord/auditPass/"+id;
-      axios.get(url).then(function (r) {
-        console.log(r);
-        if (r.success) {
-          that.queryPage(1);
-          return;
+    passMethod: function (id) {
+      let that = this
+      let url = '/rest/destroyrecord/auditPass/' + id
+      axios.get(url).then(
+        function (r) {
+          console.log(r)
+          if (r.success) {
+            that.queryPage(1)
+            return
+          }
+          that.$Notice.error({ title: '错误', desc: r.msg })
+        },
+        function (e) {
+          console.log(e)
+          that.$Notice.error({ title: '错误', desc: '系统异常' })
         }
-        that.$Notice.error({title: '错误', desc: r.msg});
-      }, function (e) {
-        console.log(e);
-        that.$Notice.error({title: '错误', desc: '系统异常'});
-      })
+      )
     },
-    notPassMethod:function (id){
+    notPassMethod: function (id) {
       debugger
-      let that=this;
-      let url = "/rest/destroyrecord/auditNoPass/"+id;
-      axios.get(url).then(function (r) {
-        console.log(r);
-        if (r.success) {
-          that.queryPage(1);
-          return;
+      let that = this
+      let url = '/rest/destroyrecord/auditNoPass/' + id
+      axios.get(url).then(
+        function (r) {
+          console.log(r)
+          if (r.success) {
+            that.queryPage(1)
+            return
+          }
+          that.$Notice.error({ title: '错误', desc: r.msg })
+        },
+        function (e) {
+          console.log(e)
+          that.$Notice.error({ title: '错误', desc: '系统异常' })
         }
-        that.$Notice.error({title: '错误', desc: r.msg});
-      }, function (e) {
-        console.log(e);
-        that.$Notice.error({title: '错误', desc: '系统异常'});
-      })
+      )
     }
   }
 }

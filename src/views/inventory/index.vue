@@ -24,7 +24,7 @@
     </div>
 
     <!-- 表格内容 -->
-    <Table border :columns="columns2" :data="data3"></Table>
+    <Table border :columns="columns2" height="400" :data="data3"></Table>
     <Page
       :total="pages"
       :current="pageNum"
@@ -35,13 +35,13 @@
     />
 
     <!-- 弹窗-新建 -->
-    <Modal v-model="modalShow2" title="新建盘点" width="900">
+    <Modal v-model="modalShow2" title="新建盘点" @on-ok="okNew" width="900">
       <Row :gutter="16">
         <Col span="12"
           ><label>盘点名称：<span style="color: red">*</span></label
-          ><Input v-model="value"
+          ><Input v-model="recordObj.name"
         /></Col>
-        <Col span="12"><label>备注：</label><Input v-model="value" /></Col>
+        <Col span="12"><label>备注：</label><Input v-model="recordObj.content" /></Col>
       </Row>
 
       <Row :gutter="16">
@@ -64,76 +64,24 @@
       <Row :gutter="16">
         <Col span="12">
           <label>盘点时间：</label>
-          <DatePicker type="date" placeholder="请选择开始日期" v-model="formItem.date"></DatePicker>
-        </Col>
-        <Col span="12">
-          <label>部门：</label>
-          <Select placeholder="请选择部门">
-            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
-              item.label
-            }}</Option>
-          </Select>
+          <DatePicker
+            type="date"
+            placeholder="请选择开始日期"
+            v-model="recordObj.createTime"
+          ></DatePicker>
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12">
-          <label>所属公司：</label>
-          <Select placeholder="请选择所属公司">
-            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
-              item.label
-            }}</Option>
-          </Select>
-        </Col>
+        <Col span="12"> <label>所属公司：</label><Input v-model="recordObj.ownerCompany" /></Col>
         <Col span="12">
           <label>资产分类：</label>
-          <Input v-model="value" />
+          <Input v-model="recordObj.goodsType" />
         </Col>
       </Row>
-      <Row :gutter="16">
-        <Col span="12">
-          <label>区域：</label>
-          <Input v-model="value" />
-        </Col>
-        <Col span="12" style="margin-bottom: 40px">
-          <label>管理员：</label>
-          <Input v-model="value" />
-        </Col>
-      </Row>
-      <div slot="footer">
-        <Button type="primary" @click="handleAdd">确定</Button>
-        <Button @click="modalShow2 = false">取消</Button>
-      </div>
     </Modal>
     <!-- 盘点明细 -->
-    <Modal v-model="detailShow" title="盘点明细" @on-ok="ok" @on-cancel="cancel">
-      <Row>
-        <Col span="12">状态：</Col>
-        <Col span="12">资产编号：{{ detailArr.goodsNum }}</Col>
-      </Row>
-      <Row>
-        <Col span="12">资产类别：{{ detailArr.goodsType }}</Col>
-        <Col span="12">资产名称：{{ detailArr.goodsName }}</Col>
-      </Row>
-      <Row>
-        <Col span="12">标准型号：{{ detailArr.standardModel }}</Col>
-        <Col span="12">计量单位：{{ detailArr.goometeringUnitdsNum }}</Col>
-      </Row>
-      <Row>
-        <Col span="12">规格型号：{{ detailArr.specsModel }}</Col>
-        <Col span="12">购入日期：{{ detailArr.buyTime }}</Col>
-      </Row>
-      <Row>
-        <Col span="12">所属公司：{{ detailArr.ownerCompany }}</Col>
-        <Col span="12">使用部门：{{ detailArr.department }}</Col>
-      </Row>
-      <Row>
-        <Col span="12">使用人：{{ detailArr.ownerId }}</Col>
-        <Col span="12">管理员：{{ detailArr.adminId }}</Col>
-      </Row>
-      <Row>
-        <Col span="12">存放地点：{{ detailArr.store_place }}</Col>
-        <Col span="12">备注：{{ detailArr.remark }}</Col>
-      </Row>
+    <Modal v-model="detailShow" title="盘点明细" @on-ok="ok" @on-cancel="cancel" width="1200">
+      <Table border :columns="columnsModal" :data="detailArr"></Table>
     </Modal>
   </div>
 </template>
@@ -181,7 +129,7 @@ export default {
       columns2: [
         {
           title: '盘点单名称',
-          key: 'content'
+          key: 'name'
         },
         {
           title: '分配用户',
@@ -197,7 +145,20 @@ export default {
         },
         {
           title: '状态',
-          key: 'status'
+          key: 'status',
+          render: (h, params) => {
+            let value = params.row.status
+
+            console.log(value)
+            let statusText
+            if (value == 0) {
+              statusText = '待处理'
+            } else {
+              statusText = '已处理'
+            }
+
+            return h('span', statusText)
+          }
         },
         {
           title: '判断报告',
@@ -243,10 +204,107 @@ export default {
           zip1: 'test'
         }
       ],
+      columnsModal: [
+        {
+          title: '盘点单名称',
+          key: 'goodsName',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.goodsName)
+          }
+        },
+        {
+          title: '资产编号',
+          key: 'goodsNum',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.goodsNum)
+          }
+        },
+        {
+          title: '资产类别',
+          key: 'goodsType',
+          render: (h, params) => {
+            console.log(this.detailArr[params.index])
+            return h('span', this.detailArr[params.index].goodsRecord.goodsType)
+          }
+        },
+        {
+          title: '标准型号',
+          key: 'standardModel',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.standardModel)
+          }
+        },
+        {
+          title: '计量单位',
+          key: 'meteringUnit',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.meteringUnit)
+          }
+        },
+
+        {
+          title: '规格型号',
+          key: 'specsModel',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.specsModel)
+          }
+        },
+        {
+          title: '购入日期：',
+          key: 'buyTime',
+          width: 180,
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.buyTime)
+          }
+        },
+        {
+          title: '所属公司',
+          key: 'ownerCompany',
+          render: (h, params) => {
+            console.log(params)
+            return h('span', this.detailArr[params.index].goodsRecord.ownerCompany)
+          }
+        },
+        {
+          title: '使用部门',
+          key: 'department',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.department)
+          }
+        },
+        {
+          title: '使用人',
+          key: 'ownerId',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.ownerId)
+          }
+        },
+        {
+          title: '管理员',
+          key: 'adminId',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.adminId)
+          }
+        },
+        {
+          title: '存放地点',
+          key: 'storePlace',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.storePlace)
+          }
+        },
+        {
+          title: '备注',
+          key: 'remark',
+          render: (h, params) => {
+            return h('span', this.detailArr[params.index].goodsRecord.remark)
+          }
+        }
+      ],
       //盘点弹窗
       detailShow: false,
       //盘点明细数据
-      detailArr: {},
+      detailArr: [],
       //分页器数据
       pages: 0,
       pageNum: 1,
@@ -300,7 +358,17 @@ export default {
         date: '',
         time: '',
         desc: ''
-      }
+      },
+      recordObj: {
+        id: null,
+        name: '',
+        content: '', //盘点内容
+        goodsType: '', //资产分类
+        ownerCompany: '', //所属公司
+        createUserid: '2',
+        status: '0',
+        createTime: ''
+      } //新建/编辑记录对象
     }
   },
   computed: {},
@@ -318,7 +386,7 @@ export default {
       let id = params.row.id
       const res = await inventoryDetail(id)
 
-      this.detailArr = res.detail.checkDetail[0].goodsRecord
+      this.detailArr = res.detail.checkDetail
       console.log(this.detailArr)
     },
     //切换新建弹窗
@@ -366,6 +434,35 @@ export default {
     //弹窗-上传文件
     ok() {},
     cancel() {},
+
+    okNew() {
+      let that = this
+      let params = this.recordObj
+      if (!params) {
+        this.$Notice.error({ title: '错误', desc: '请填写信息' })
+        return false
+      }
+      if (!params.name) {
+        this.$Notice.error({ title: '错误', desc: '请填写盘点名称' })
+        return false
+      }
+      let url = '/rest/check/save'
+      console.log('params' + JSON.stringify(params))
+      axios.post(url, params).then(
+        function (r) {
+          if (r.success) {
+            that.queryPage(1)
+            that.$Notice.success({ title: '成功', desc: '添加成功' })
+            return
+          }
+          that.$Notice.error({ title: '错误', desc: r.msg })
+        },
+        function (e) {
+          console.log(e)
+          that.$Notice.error({ title: '错误', desc: '系统异常' })
+        }
+      )
+    },
 
     //表单调试函数
     remoteMethod4(query) {
