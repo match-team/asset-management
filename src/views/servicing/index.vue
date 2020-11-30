@@ -4,17 +4,23 @@
 <template>
   <div class="container">
     <!-- 顶部栏 -->
-    <div class="scrap1 margin-bottom-15">
-      <Select class="width-200 margin-right-15" placeholder="请选择部门">
-        <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
-          item.label
-        }}</Option>
-      </Select>
-      <Input class="width-200 margin-right-15" placeholder="请输入关键字"></Input>
-      <Button>查询</Button>
-      <!-- 右侧2个按钮 -->
-      <div class="scrap2">
-        <Button class="margin-right-15">新建</Button>
+    <div class="table_top">
+      <div>
+        <Button type="success" @click="modalShow2 = true">新建</Button>
+        <Select v-model="ownerCompany" style="width: 200px" placeholder="请选择部门">
+          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
+            item.label
+          }}</Option>
+        </Select>
+
+        <Input
+          v-model="searchKey"
+          placeholder="请输入关键字"
+          style="width: auto; margin-right: 10px"
+        >
+          <Icon type="ios-search" slot="suffix" />
+        </Input>
+        <Button type="info" @click="handleSearch">查询</Button>
       </div>
     </div>
 
@@ -23,7 +29,7 @@
     <Page :total="100" show-elevator class="pagenation" />
 
     <!-- 弹窗-新建 -->
-    <Modal v-model="modalShow2" title="新建入库" width="900">
+    <Modal v-model="modalShow2" title="维修新建" width="900">
       <Row :gutter="16">
         <Col span="12"><label>维修编号</label><Input v-model="value" /></Col>
         <Col span="12">
@@ -51,43 +57,30 @@
       <Row>
         <Col span="24">资产照片:</Col>
         <Col span="24">
-          <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
-            <template v-if="item.status === 'finished'">
-              <img :src="item.url" />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-              </div>
-            </template>
-            <template v-else>
-              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-            </template>
+          <div class="demo-upload-list" v-for="(item, index) in images" :key="index">
+            <img
+              :src="item"
+              style="width: 58px; height: 58px; line-height: 58px"
+              @click="handleView"
+            />
           </div>
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="defaultList"
-            :on-success="handleSuccess"
             :format="['jpg', 'jpeg', 'png']"
             :max-size="2048"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :before-upload="handleBeforeUpload"
+            :before-upload="onBeforeUpload"
             multiple
             type="drag"
-            action="//jsonplaceholder.typicode.com/posts/"
             style="display: inline-block; width: 58px"
+            action="."
           >
             <div style="width: 58px; height: 58px; line-height: 58px">
               <Icon type="ios-camera" size="20"></Icon>
             </div>
           </Upload>
-          <Modal title="View Image" v-model="visible">
-            <img
-              :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'"
-              v-if="visible"
-              style="width: 100%"
-            />
+          <Modal title="图片预览" v-model="visible">
+            <img :src="images[0]" v-if="visible" style="width: 100%" />
           </Modal>
         </Col>
       </Row>
@@ -103,32 +96,33 @@ export default {
   props: {},
   data() {
     return {
+      searchKey: '',
+      ownerCompany: '',
+      visible: false,
+      uploadFileList: [],
+      images: [],
       value: '',
       modalShow2: false,
       cityList: [
         {
-          value: 'New York',
-          label: 'New York'
+          value: '欧冶采购',
+          label: '欧冶采购'
         },
         {
-          value: 'London',
-          label: 'London'
+          value: '欧冶金融',
+          label: '欧冶金融'
         },
         {
-          value: 'Sydney',
-          label: 'Sydney'
+          value: '欧冶云商',
+          label: '欧冶云商'
         },
         {
-          value: 'Ottawa',
-          label: 'Ottawa'
+          value: '东方钢铁',
+          label: '东方钢铁'
         },
         {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
+          value: '欧冶物流',
+          label: '欧冶物流'
         }
       ],
       model1: '',
@@ -327,124 +321,60 @@ export default {
           value: 'guangzhou',
           label: '广州'
         }
-      ],
-      formValidate: {
-        name: '',
-        mail: '',
-        city: '',
-        gender: '',
-        interest: [],
-        date: '',
-        time: '',
-        desc: ''
-      },
-      //照片调试
-      defaultList: [
-        {
-          name: 'a42bdcc1178e62b4694c830f028db5c0',
-          url: 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-        },
-        {
-          name: 'bc7521e033abdd1e92222d733590f104',
-          url: 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-        }
-      ],
-      imgName: '',
-      visible: false,
-      uploadList: []
+      ]
     }
   },
   computed: {},
   watch: {},
   created() {},
-  mounted() {
-    this.uploadList = this.$refs.upload.fileList
-  },
+
   beforeDestroy() {},
   methods: {
-    //图片上传
-    handleView(name) {
-      this.imgName = name
+    handleSearch() {},
+    onBeforeUpload(file) {
+      console.log(file)
+      this.uploadFileList.push(file)
+
+      const check = this.uploadFileList.length > 1
+      if (check) {
+        this.$Message.info('最多上传一张图片')
+      }
+      this.processPreviewImage()
+    },
+    processPreviewImage() {
+      this.images = []
+      let index = 0
+
+      const reader = new FileReader()
+      reader.onload = ({ target }) => {
+        this.images.push(target.result)
+
+        index++
+        index < this.uploadFileList.length && reader.readAsDataURL(this.uploadFileList[index])
+      }
+
+      reader.readAsDataURL(this.uploadFileList[index])
+    },
+    handleView() {
       this.visible = true
-    },
-    handleRemove(file) {
-      const fileList = this.$refs.upload.fileList
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
-    },
-    handleSuccess(res, file) {
-      file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
-      file.name = '7eb99afb9d5f317c912f08b5212fd69a'
-    },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-      })
-    },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-      })
-    },
-    handleBeforeUpload() {
-      const check = this.uploadList.length < 5
-      if (!check) {
-        this.$Notice.warning({
-          title: 'Up to five pictures can be uploaded.'
-        })
-      }
-      return check
-    },
-
-    //弹窗-上传文件
-    ok() {},
-    cancel() {},
-
-    //表单调试函数
-    remoteMethod4(query) {
-      if (query !== '') {
-        this.loading4 = true
-        setTimeout(() => {
-          this.loading4 = false
-          this.options4 = this.list2.filter(item => item.label.indexOf(query) > -1)
-        }, 200)
-      } else {
-        this.options4 = []
-      }
-    },
-    setDefaultOptions(options) {
-      this.options4 = options
-    },
-    //表单提交的两个按钮
-    handleSubmit(name) {
-      this.$refs[name].validate(valid => {
-        if (valid) {
-          this.$Message.success('成功!')
-        } else {
-          this.$Message.error('请完善表格!')
-        }
-      })
-    },
-    handleReset(name) {
-      this.$refs[name].resetFields()
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.width-200 {
-  width: 200px;
+/deep/ .ivu-table-header thead tr th,
+/deep/ .ivu-table-fixed-header thead tr th {
+  text-align: center;
 }
-.margin-right-15 {
-  margin-right: 15px;
+/deep/ .ivu-date-picker {
+  width: 100%;
 }
-.scrap2 {
-  float: right;
-}
-.margin-bottom-15 {
-  margin-bottom: 15px;
+.table_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .ivu-col {
@@ -456,42 +386,7 @@ export default {
     width: 100px;
   }
 }
-
-// 图片上传
-.demo-upload-list {
-  display: inline-block;
-  width: 60px;
-  height: 60px;
-  text-align: center;
-  line-height: 60px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  overflow: hidden;
-  background: #fff;
-  position: relative;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  margin-right: 4px;
-}
-.demo-upload-list img {
-  width: 100%;
-  height: 100%;
-}
-.demo-upload-list-cover {
-  display: none;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.6);
-}
-.demo-upload-list:hover .demo-upload-list-cover {
-  display: block;
-}
-.demo-upload-list-cover i {
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  margin: 0 2px;
+.ivu-select {
+  margin: 0 10px;
 }
 </style>

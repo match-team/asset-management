@@ -32,42 +32,73 @@
     />
     <Modal v-model="modalShow" title="新建入库" width="900">
       <Row :gutter="16">
-        <Col span="12"><label>资产编号：</label><Input v-model="formModal.goodsNum" /></Col>
-        <Col span="12"><label>资产类别：</label><Input v-model="formModal.goodsType" /></Col>
-      </Row>
-      <Row :gutter="16">
-        <Col span="12"><label>资产名称：</label><Input v-model="formModal.goodsName" /></Col>
-        <Col span="12"><label>标准型号：</label><Input v-model="formModal.standardModel" /></Col>
-      </Row>
-      <Row :gutter="16">
-        <Col span="12"><label>计量单位：</label><Input v-model="formModal.meteringUnit" /></Col>
-        <Col span="12"><label>规格型号：</label><Input v-model="formModal.specsModel" /></Col>
-      </Row>
-      <Row :gutter="16">
-        <Col span="12"><label>来源：</label><Input v-model="formModal.source" /></Col>
         <Col span="12"
-          ><label>购入日期：</label>
+          ><label><span style="color: red">*</span>资产编号：</label
+          ><Input v-model="formModal.goodsNum"
+        /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>资产类别：</label
+          ><Input v-model="formModal.goodsType"
+        /></Col>
+      </Row>
+      <Row :gutter="16">
+        <Col span="12"
+          ><label><span style="color: red">*</span>资产名称：</label
+          ><Input v-model="formModal.goodsName"
+        /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>标准型号：</label
+          ><Input v-model="formModal.standardModel"
+        /></Col>
+      </Row>
+      <Row :gutter="16">
+        <Col span="12"
+          ><label><span style="color: red">*</span>计量单位：</label
+          ><Input v-model="formModal.meteringUnit"
+        /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>规格型号：</label
+          ><Input v-model="formModal.specsModel"
+        /></Col>
+      </Row>
+      <Row :gutter="16">
+        <Col span="12"
+          ><label><span style="color: red">*</span>来源：</label><Input v-model="formModal.source"
+        /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>购入日期：</label>
           <DatePicker :editable="false" v-model="formModal.buyTime" type="date"></DatePicker>
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"><label>所属公司：</label><Input v-model="formModal.ownerCompany" /></Col>
-        <Col span="12"><label>金额：</label><Input v-model="formModal.price" /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>所属公司：</label
+          ><Input v-model="formModal.ownerCompany"
+        /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>金额：</label><Input v-model="formModal.price"
+        /></Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"><label>管理员：</label><Input v-model="formModal.adminId" /></Col>
         <Col span="12"
-          ><label>使用期限：</label>
+          ><label><span style="color: red">*</span>管理员：</label
+          ><Input v-model="formModal.adminId"
+        /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>使用期限：</label>
           <DatePicker :editable="false" v-model="formModal.usedDate" type="date"></DatePicker>
         </Col>
       </Row>
       <Row :gutter="16">
-        <Col span="12"><label>存放地点：</label><Input v-model="formModal.storePlace" /></Col>
+        <Col span="12"
+          ><label><span style="color: red">*</span>存放地点：</label
+          ><Input v-model="formModal.storePlace"
+        /></Col>
         <Col span="12"><label>创建人：</label><Input v-model="formModal.createUser" /></Col>
       </Row>
       <Row :gutter="16">
         <Col span="12"
-          ><label>创建时间：</label>
+          ><label><span style="color: red">*</span>创建时间：</label>
 
           <DatePicker :editable="false" v-model="formModal.createTime" type="date"></DatePicker>
         </Col>
@@ -81,7 +112,7 @@
         </Col>
       </Row>
       <Row>
-        <Col span="24">上传图片:</Col>
+        <Col span="24"><span style="color: red">*</span>上传图片:</Col>
         <Col span="24">
           <div class="demo-upload-list" v-for="(item, index) in images" :key="index">
             <img
