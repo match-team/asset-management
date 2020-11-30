@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       value: '',
-      modalShow2: true,
+      modalShow2: false,
       cityList: [
         {
           value: 'New York',

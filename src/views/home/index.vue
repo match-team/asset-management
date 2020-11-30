@@ -75,7 +75,7 @@
 
       <Row :gutter="16" v-if="newAttribute.length > 0">
         <Col span="12" v-for="(item, index) in newAttribute" :key="index">
-          <label>{{ item[`prop${index}`] }}:</label>
+          <label>{{ item[`pro${index + 1}`] }}:</label>
           <Input @on-change="handleInput(index)" ref="input1"></Input>
         </Col>
       </Row>
@@ -149,7 +149,9 @@
 import moment from 'moment'
 import { getwarehousingList, warehousingAdd } from '@/api/warehousing'
 import { deepClone } from '@/utils/deepClone'
-let attributeIndex = -1
+let attributeIndex = 0
+let _arr = []
+
 export default {
   name: 'index',
   components: {},
@@ -325,13 +327,17 @@ export default {
                   },
                   on: {
                     click: () => {
-                      console.log(`http://10.60.17.43:8080/gdzcgl/${params.row.filePaths}`)
+                      let str = params.row.filePaths
+                      let strs = str.slice(0, str.length - 1)
+                      console.log(strs)
+
                       this.fjvisible = true
-                      this.fjUrl = `http://10.60.17.43:8080/gdzcgl/${params.row.filePaths}`
+                      this.fjUrl = `http://10.60.17.43:8080/gdzcgl/${strs}`
+                      console.log(this.fjUrl)
                     }
                   }
                 },
-                '附件图片'
+                params.row.filePaths
               )
             ])
           }
@@ -356,17 +362,22 @@ export default {
     largeModalAdd() {
       this.modalShow = true
       this.newAttribute = []
-      attributeIndex = -1
+      attributeIndex = 0
       this.newValue = ''
     },
     changePageNum(page) {
       this.getList(page)
     },
     handleInput(index) {
-      let _arr = deepClone(this.newAttribute)
+      _arr = deepClone(this.newAttribute)
+      console.log(_arr)
       let value = this.$refs.input1[0].currentValue
+      let key = `pro${index + 1}`
 
-      _arr[index][`prop${index}`] = value
+      // this.newAttribute.push({ [key]: value })
+      _arr.push({ [key]: value })
+      _arr[index][`pro${index + 1}`] = value
+      console.log(_arr)
     },
     ok() {},
     // 新建
@@ -379,11 +390,12 @@ export default {
       for (let key in this.formModal) {
         formData.append(key, this.formModal[key])
       }
-      this.newAttribute.forEach(item => {
+      _arr.forEach(item => {
         for (let key in item) {
           formData.append(key, item[key])
         }
       })
+
       const res = await warehousingAdd(formData)
       console.log(res)
       if (res.success) {
@@ -430,14 +442,13 @@ export default {
     handleSearch() {
       this.getList()
     },
-    Importfile() {
-      this.fileVisible = true
-    },
     // 添加新属性
     addattributeModalAdd() {
       attributeIndex++
-      let key = `prop${attributeIndex}`
+      let key = `pro${attributeIndex}Desc`
       this.newAttribute.push({ [key]: this.newValue })
+      console.log(this.newAttribute)
+
       // let _arr = []
       // _arr.push({ text: this.newValue })
       // attributeIndex++

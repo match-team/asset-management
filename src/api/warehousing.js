@@ -21,3 +21,11 @@ export function warehousingAdd(form) {
     }
   })
 }
+//盘点明细
+export function inventoryDetail(id) {
+  return axios.get('rest/check/detail', {
+    params: {
+      id
+    }
+  })
+}
