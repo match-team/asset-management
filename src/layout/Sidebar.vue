@@ -1,7 +1,7 @@
 <template>
   <aside class="platform-sidebar">
     <Menu theme="dark" :active-name="pageMark" @on-select="handleSelect">
-      <img src="../assets/images/ouyeellogo.png" alt="" class="img-logo" />
+      <img src="/gdzcgl/imgs/ouyeellogo.png" class="img-logo" />
       <router-link to="platform">
         <MenuItem name="资产入库">
           <Icon type="md-document" />

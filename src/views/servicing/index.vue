@@ -131,7 +131,7 @@ export default {
         {
           title: '维修编号',
           key: 'name',
-          width: 100,
+          width: 140,
           fixed: 'left'
         },
         {
@@ -141,18 +141,13 @@ export default {
         },
         {
           title: '状态',
-          key: 'province',
-          width: 100
-        },
-        {
-          title: '照片',
-          key: 'city',
+          key: 'status',
           width: 100
         },
         {
           title: '业务日期',
           key: 'address',
-          width: 100
+          width: 140
         },
         {
           title: '处理人',
@@ -166,120 +161,73 @@ export default {
         },
         {
           title: '维修花费',
-          key: 'zip',
+          key: 'zip1',
           width: 100
         },
         {
           title: '维修内容',
-          key: 'zip',
+          key: 'zip2',
           width: 100
         },
         {
           title: '备注',
-          key: 'zip',
-          width: 100
+          key: 'remark',
+          width: 140
         },
         {
           title: '资产编号',
-          key: 'zip',
-          width: 100
-        },
-        {
-          title: '操作',
-          key: 'action',
-          width: 300,
-          fixed: 'right',
-          render: h => {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '15px'
-                  }
-                },
-                '编辑'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '15px'
-                  }
-                },
-                '打印'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '15px'
-                  }
-                },
-                '完成维修'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  }
-                },
-                '删除'
-              )
-            ])
-          }
+          key: 'zip6',
+          width: 140
         }
       ],
       data3: [
         {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park',
-          province: 'America',
+          status: '已处理',
+          name: '23211221',
+          age: '已完成',
+          address: '2020-06-21',
+          remark: '电路板损坏',
           city: 'New York',
-          zip: 100000,
-          zip1: 'test'
+          zip: '杨尚文',
+          zip1: '9809',
+          zip2: '电脑损坏',
+          zip6: '23800112'
         },
         {
-          name: 'Jim Green',
-          age: 24,
-          address: 'Washington, D.C. No. 1 Lake Park',
-          province: 'America',
+          status: '已处理',
+          name: '232167521',
+          age: '未完成',
+          address: '2020-12-12',
+          remark: '今天星期五',
           city: 'Washington, D.C.',
-          zip: 100000,
-          zip1: 'test'
+          zip: '凌正俊',
+          zip1: '8923',
+          zip2: '桌椅损坏',
+          zip6: '099942'
         },
         {
-          name: 'Joe Black',
-          age: 30,
-          address: 'Sydney No. 1 Lake Park',
-          province: 'Australian',
+          status: '已处理',
+          name: '232327821',
+          age: '已完成',
+          address: '2020-09-09',
+          remark: '空调制冷故障了',
           city: 'Sydney',
-          zip: 100000,
-          zip1: 'test'
+          zip: '何余飞',
+          zip1: '6762',
+          zip2: '空调故障',
+          zip6: '87723214'
         },
         {
-          name: 'Jon Snow',
-          age: 26,
-          address: 'Ottawa No. 2 Lake Park',
-          province: 'Canada',
+          status: '已处理',
+          name: '23211221',
+          age: '未完成',
+          address: '2020-07-19',
+          remark: '故障报修，已损坏',
           city: 'Ottawa',
-          zip: 100000,
-          zip1: 'test'
+          zip: '韩闯',
+          zip1: '892',
+          zip2: '电脑损坏',
+          zip6: '8900131'
         }
       ],
       //创建表单调试数据
