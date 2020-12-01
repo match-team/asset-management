@@ -135,7 +135,12 @@ export default {
         {
           title: '领用日期',
           key: 'usedDate',
-          width: 100
+          width: 100,
+          render:(h,params)=>{
+            let that =this;
+            let str=that.$options.filters['DATE_DAY'](params.row.usedDate);
+            return h('span',str);
+          }
         },
         {
           title: '使用部门',

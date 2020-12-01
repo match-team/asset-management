@@ -171,7 +171,12 @@ export default {
         {
           title: '报废日期',
           key: 'destroyDate',
-          width: 100
+          width: 100,
+          render:(h,params)=>{
+            let that =this;
+            let str=that.$options.filters['DATE_DAY'](params.row.destroyDate);
+            return h('span',str);
+          }
         },
         {
           title: '申请人',
@@ -218,7 +223,7 @@ export default {
             }
             return h('span', fileA)
           }
-        },
+        }/*,
         {
           title: '操作',
           key: 'action',
@@ -264,7 +269,7 @@ export default {
                   '驳回'
               )])
           }
-        }
+        }*/
       ],//表格标签
       modalShow: false,
       searchKey: "",//查询关键字

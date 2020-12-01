@@ -11,6 +11,12 @@ Vue.use(Print) //注册
 import './styles/common.less'
 Vue.config.productionTip = false
 Vue.use(ViewUI)
+Vue.filter("DATE_DAY",function (val){
+  if (val){
+    return val.substr(0,val.indexOf(" "));
+  }
+  return "-";
+})
 new Vue({
   router,
   store,

@@ -297,7 +297,12 @@ export default {
         {
           title: '购入日期',
           key: 'buyTime',
-          width: 200
+          width: 200,
+          render:(h,params)=>{
+            let that =this;
+            let str=that.$options.filters['DATE_DAY'](params.row.buyTime);
+            return h('span',str);
+          }
         },
         {
           title: '所属公司',
@@ -318,7 +323,12 @@ export default {
         {
           title: '使用期限',
           key: 'usedDate',
-          width: 200
+          width: 200,
+          render:(h,params)=>{
+            let that =this;
+            let str=that.$options.filters['DATE_DAY'](params.row.usedDate);
+            return h('span',str);
+          }
         },
         {
           title: '存放地点',

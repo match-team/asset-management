@@ -163,7 +163,12 @@ export default {
         {
           title: '入账日期',
           key: 'billDate',
-          width: 100
+          width: 100,
+          render:(h,params)=>{
+            let that =this;
+            let str=that.$options.filters['DATE_DAY'](params.row.billDate);
+            return h('span',str);
+          }
         },
         {
           title: '财务使用期限（月）',

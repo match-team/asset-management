@@ -262,7 +262,10 @@ export default {
           key: 'buyTime',
           width: 180,
           render: (h, params) => {
-            return h('span', this.detailArr[params.index].goodsRecord.buyTime)
+            let that = this;
+            let buyTime = this.detailArr[params.index].goodsRecord.buyTime;
+            let str = that.$options.filters['DATE_DAY'](buyTime);
+            return h('span', str);
           }
         },
         {

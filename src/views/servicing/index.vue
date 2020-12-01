@@ -26,7 +26,7 @@
 
     <!-- 表格内容 -->
     <Table border :columns="columns2" :data="data3"></Table>
-    <Page :total="100" show-elevator class="pagenation" />
+    <Page :total="1" show-elevator class="pagenation" />
 
     <!-- 弹窗-新建 -->
     <Modal v-model="modalShow2" title="维修新建" width="900">
