@@ -158,6 +158,11 @@ export default {
           width: 100
         },
         {
+          title: '领用人',
+          key: 'ownerId',
+          width: 100
+        },
+        {
           title: '备注',
           key: 'remark',
           width: 200

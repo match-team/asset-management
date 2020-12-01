@@ -33,8 +33,11 @@ router.beforeEach((to, from, next) => {
   )
 })
 
-router.afterEach(() => {
+router.afterEach((to, from) => {
   LoadingBar.finish()
+  if (to.fullPath=='/platform'&&from.fullPath=="/login"){
+    router.go(0);
+  }
 })
 
 export default router

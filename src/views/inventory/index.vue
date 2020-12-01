@@ -6,11 +6,11 @@
     <div class="table_top">
       <div>
         <Button type="success" @click="largeModalAdd">新建</Button>
-        <Select v-model="ownerCompany" style="width: 200px" placeholder="请选择部门">
+<!--        <Select v-model="ownerCompany" style="width: 200px" placeholder="请选择部门">
           <Option v-for="item in cityList" :value="item.value" :key="item.value">{{
             item.label
           }}</Option>
-        </Select>
+        </Select>-->
 
         <Input
           v-model="searchKey"
@@ -418,7 +418,8 @@ export default {
       }
       let params = {
         page: this.pageNum,
-        limit: 10
+        limit: 10,
+        name: this.searchKey
       }
       let that = this
       let url = '/rest/check/list'

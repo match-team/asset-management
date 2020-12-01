@@ -327,7 +327,7 @@ export default {
       let params = {
         current: this.pageNum,
         size: this.pageSize,
-        readme: this.searchKey,
+        searchKey: this.searchKey,
         ownerInfo: this.company
       }
       let that = this;
