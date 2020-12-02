@@ -163,7 +163,7 @@ export default {
         {
           title: '入账日期',
           key: 'billDate',
-          width: 100,
+          width: 120,
           render:(h,params)=>{
             let that =this;
             let str=that.$options.filters['DATE_DAY'](params.row.billDate);

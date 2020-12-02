@@ -140,16 +140,17 @@ export default {
           key: 'name'
         },
         {
-          title: '分配用户',
+          title: '创建人',
           key: 'createUserName'
         },
         {
-          title: '创建人',
-          key: 'createUserid'
-        },
-        {
           title: '创建时间',
-          key: 'createTime'
+          key: 'createTime',
+          render:(h,params)=>{
+            let that =this;
+            let str=that.$options.filters['DATE_DAY'](params.row.createTime);
+            return h('span',str);
+          }
         },
         {
           title: '状态',

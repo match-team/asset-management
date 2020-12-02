@@ -113,7 +113,7 @@ export default {
         {
           title: '退库日期',
           key: 'backDate',
-          width: 100,
+          width: 120,
           render:(h,params)=>{
             let that =this;
             let str=that.$options.filters['DATE_DAY'](params.row.backDate);

@@ -103,7 +103,7 @@ export default {
         {
           title: '资产编码',
           key: 'goodsNum',
-          width: 100,
+          width: 150,
           fixed: 'center'
         },
         {
@@ -135,7 +135,7 @@ export default {
         {
           title: '领用日期',
           key: 'usedDate',
-          width: 100,
+          width: 120,
           render:(h,params)=>{
             let that =this;
             let str=that.$options.filters['DATE_DAY'](params.row.usedDate);
