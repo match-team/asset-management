@@ -170,10 +170,6 @@ export default {
           }
         },
         {
-          title: '判断报告',
-          key: 'report'
-        },
-        {
           title: '操作',
           key: 'action',
           width: 100,
